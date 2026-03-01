@@ -92,4 +92,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 | 1. Foundation | 2/2 | Complete | 2026-03-01 |
 | 2. Editor | 3/3 | Complete | 2026-03-01 |
 | 3. Templates, Preview and Export | 3/3 | Complete | 2026-03-01 |
-| 4. Import | 0/2 | Not started | - |
+| 4. Import | 2/2 | Complete | 2026-03-01 |

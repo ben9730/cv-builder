@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: in_progress
-last_updated: "2026-03-01T16:30:00.000Z"
+status: complete
+last_updated: "2026-03-01T17:20:00.000Z"
 progress:
   total_phases: 4
-  completed_phases: 3
-  total_plans: 8
-  completed_plans: 8
+  completed_phases: 4
+  total_plans: 10
+  completed_plans: 10
 ---
 
 # Project State
@@ -18,16 +18,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-01)
 
 **Core value:** Users can quickly produce a polished, professional resume -- whether starting fresh or importing an existing document -- and export it in the format they need.
-**Current focus:** Phase 3 complete -- Ready for Phase 4
+**Current focus:** All phases complete -- v1.0 milestone done
 
 ## Current Position
 
-Phase: 3 of 4 (Templates, Preview and Export)
-Plan: 3 of 3 in current phase
-Status: Phase 3 complete
-Last activity: 2026-03-01 -- Completed Plans 03-01, 03-02, 03-03
+Phase: 4 of 4 (Import)
+Plan: 2 of 2 in current phase
+Status: Phase 4 complete
+Last activity: 2026-03-01 -- Completed Plans 04-01, 04-02
 
-Progress: [███████░░░] 75%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -43,9 +43,10 @@ Progress: [███████░░░] 75%
 | 1-Foundation | 2/2 | 9 min | 4.5 min |
 | 2-Editor | 3/3 | 19 min | 6.3 min |
 | 3-Templates | 3/3 | 15 min | 5 min |
+| 4-Import | 2/2 | 12 min | 6 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-02 (6 min), 02-03 (5 min), 03-01 (5 min), 03-02 (5 min), 03-03 (5 min)
+- Last 5 plans: 03-01 (5 min), 03-02 (5 min), 03-03 (5 min), 04-01 (7 min), 04-02 (5 min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -70,6 +71,10 @@ Recent decisions affecting current work:
 - DOCX export: Structured content focus (headings, bullets), not visual template replication
 - JSON backup: { version, exportedAt, template, resume } format for future migration support
 - Export menu: Custom dropdown with lazy imports for SSR-unsafe modules
+- Import: pdfjs-dist/legacy/build/pdf.mjs for server-side PDF text extraction (Node.js compatible)
+- Import: Native HTML5 drag-and-drop (no react-dropzone), Radix Dialog for modal
+- Import: Section mapper uses regex heuristics with HIGH/MEDIUM/LOW confidence, mandatory review before commit
+- Import: JSON backup validated via ResumeDataSchema.safeParse, loaded directly with all-HIGH confidence
 
 ### Pending Todos
 
@@ -82,5 +87,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed all Phase 3 plans (03-01, 03-02, 03-03)
+Stopped at: Completed all Phase 4 plans (04-01, 04-02) -- v1.0 milestone complete
 Resume file: None
