@@ -1,14 +1,14 @@
 import { Document, Page, View, Text, StyleSheet } from '@react-pdf/renderer'
 import { FONT_FAMILY } from './fonts'
-import { DateRange, BulletList, ContactLine } from './shared/pdf-primitives'
+import { EntryRow, BulletList, ContactLine } from './shared/pdf-primitives'
 import type { ResumeData } from '@/types/resume'
 
 const styles = StyleSheet.create({
   page: {
     padding: 40,
     fontFamily: FONT_FAMILY,
-    fontSize: 9,
-    color: '#1F2937',
+    fontSize: 10,
+    color: '#333333',
     lineHeight: 1.4,
   },
   // Centered header
@@ -17,10 +17,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   name: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 700,
     fontFamily: FONT_FAMILY,
-    color: '#111827',
+    color: '#000000',
     letterSpacing: 2,
     textTransform: 'uppercase',
     marginBottom: 3,
@@ -28,23 +28,23 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 10,
     fontFamily: FONT_FAMILY,
-    color: '#6B7280',
+    color: '#666666',
     marginBottom: 6,
   },
   // Hairline separator
   separator: {
     borderBottomWidth: 0.5,
-    borderBottomColor: '#E5E7EB',
+    borderBottomColor: '#DDDDDD',
     borderBottomStyle: 'solid',
     marginTop: 14,
     marginBottom: 4,
   },
   // Small caps section headers
   sectionTitle: {
-    fontSize: 8,
+    fontSize: 9,
     fontWeight: 700,
     fontFamily: FONT_FAMILY,
-    color: '#111827',
+    color: '#000000',
     textTransform: 'uppercase',
     letterSpacing: 2.5,
     marginBottom: 6,
@@ -52,31 +52,19 @@ const styles = StyleSheet.create({
   },
   // Body text
   summary: {
-    fontSize: 9,
-    color: '#374151',
+    fontSize: 10,
+    color: '#444444',
     fontFamily: FONT_FAMILY,
-    lineHeight: 1.6,
+    lineHeight: 1.5,
     marginBottom: 2,
   },
   // Entries
   entryContainer: {
-    marginBottom: 7,
-  },
-  entryHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 1,
-  },
-  entryTitle: {
-    fontSize: 9.5,
-    fontWeight: 700,
-    fontFamily: FONT_FAMILY,
-    color: '#111827',
+    marginBottom: 8,
   },
   entrySubtitle: {
-    fontSize: 8.5,
-    color: '#6B7280',
+    fontSize: 9,
+    color: '#666666',
     fontFamily: FONT_FAMILY,
     marginBottom: 1,
   },
@@ -86,16 +74,16 @@ const styles = StyleSheet.create({
     marginBottom: 3,
   },
   skillName: {
-    fontSize: 8.5,
+    fontSize: 10,
     fontWeight: 700,
     fontFamily: FONT_FAMILY,
-    color: '#111827',
-    width: 80,
+    color: '#000000',
+    width: 90,
   },
   skillKeywords: {
-    fontSize: 8.5,
+    fontSize: 10,
     fontFamily: FONT_FAMILY,
-    color: '#4B5563',
+    color: '#444444',
     flex: 1,
   },
   // Languages
@@ -105,29 +93,29 @@ const styles = StyleSheet.create({
     marginBottom: 3,
   },
   languageName: {
-    fontSize: 8.5,
+    fontSize: 10,
     fontFamily: FONT_FAMILY,
-    color: '#111827',
+    color: '#000000',
   },
   languageFluency: {
-    fontSize: 8.5,
+    fontSize: 10,
     fontFamily: FONT_FAMILY,
-    color: '#9CA3AF',
+    color: '#999999',
   },
   // Certs
   certItem: {
     marginBottom: 3,
   },
   certName: {
-    fontSize: 8.5,
+    fontSize: 10,
     fontWeight: 700,
     fontFamily: FONT_FAMILY,
-    color: '#111827',
+    color: '#000000',
   },
   certDetail: {
-    fontSize: 8,
+    fontSize: 9,
     fontFamily: FONT_FAMILY,
-    color: '#6B7280',
+    color: '#666666',
   },
 })
 
@@ -160,20 +148,14 @@ export function MinimalTemplate({ resume }: { resume: ResumeData }) {
             <Text style={styles.sectionTitle}>Professional Experience</Text>
             {work.map((entry, index) => (
               <View key={index} style={styles.entryContainer}>
-                <View style={styles.entryHeader}>
-                  <View style={{ flex: 1, marginRight: 8 }}>
-                    <Text style={styles.entryTitle}>
-                      {entry.position || entry.name}
-                    </Text>
-                    {entry.position && entry.name ? (
-                      <Text style={styles.entrySubtitle}>
-                        {entry.name}
-                        {entry.location ? ` \u2014 ${entry.location}` : ''}
-                      </Text>
-                    ) : null}
-                  </View>
-                  <DateRange startDate={entry.startDate} endDate={entry.endDate} />
-                </View>
+                <EntryRow
+                  title={entry.position || entry.name}
+                  subtitle={entry.position && entry.name
+                    ? entry.name + (entry.location ? ` \u2014 ${entry.location}` : '')
+                    : undefined}
+                  startDate={entry.startDate}
+                  endDate={entry.endDate}
+                />
                 {entry.summary ? <Text style={styles.summary}>{entry.summary}</Text> : null}
                 <BulletList items={entry.highlights} />
               </View>
@@ -186,22 +168,20 @@ export function MinimalTemplate({ resume }: { resume: ResumeData }) {
           <View>
             <View style={styles.separator} />
             <Text style={styles.sectionTitle}>Education</Text>
-            {education.map((entry, index) => (
-              <View key={index} style={styles.entryContainer}>
-                <View style={styles.entryHeader}>
-                  <View>
-                    <Text style={styles.entryTitle}>{entry.institution}</Text>
-                    {(entry.studyType || entry.area) ? (
-                      <Text style={styles.entrySubtitle}>
-                        {[entry.studyType, entry.area].filter(Boolean).join(' in ')}
-                      </Text>
-                    ) : null}
-                  </View>
-                  <DateRange startDate={entry.startDate} endDate={entry.endDate} />
+            {education.map((entry, index) => {
+              const degree = [entry.studyType, entry.area].filter(Boolean).join(' in ')
+              return (
+                <View key={index} style={styles.entryContainer}>
+                  <EntryRow
+                    title={degree || entry.institution}
+                    subtitle={degree ? entry.institution : undefined}
+                    startDate={entry.startDate}
+                    endDate={entry.endDate}
+                  />
+                  {entry.score ? <Text style={styles.entrySubtitle}>GPA: {entry.score}</Text> : null}
                 </View>
-                {entry.score ? <Text style={styles.entrySubtitle}>GPA: {entry.score}</Text> : null}
-              </View>
-            ))}
+              )
+            })}
           </View>
         ) : null}
 
@@ -213,7 +193,7 @@ export function MinimalTemplate({ resume }: { resume: ResumeData }) {
             {skills.map((skill, index) => (
               <View key={index} style={styles.skillRow}>
                 {skill.name ? <Text style={styles.skillName}>{skill.name}</Text> : null}
-                <Text style={styles.skillKeywords}>{skill.keywords.join(', ')}</Text>
+                <Text style={styles.skillKeywords}>{skill.keywords.join(' | ')}</Text>
               </View>
             ))}
           </View>
@@ -244,11 +224,12 @@ export function MinimalTemplate({ resume }: { resume: ResumeData }) {
             <Text style={styles.sectionTitle}>Projects</Text>
             {projects.map((project, index) => (
               <View key={index} style={styles.entryContainer}>
-                <View style={styles.entryHeader}>
-                  <Text style={styles.entryTitle}>{project.name}</Text>
-                  <DateRange startDate={project.startDate} endDate={project.endDate} />
-                </View>
-                {project.description ? <Text style={styles.summary}>{project.description}</Text> : null}
+                <EntryRow
+                  title={project.name}
+                  subtitle={project.description}
+                  startDate={project.startDate}
+                  endDate={project.endDate}
+                />
                 <BulletList items={project.highlights} />
               </View>
             ))}
@@ -276,17 +257,12 @@ export function MinimalTemplate({ resume }: { resume: ResumeData }) {
             <Text style={styles.sectionTitle}>Volunteer</Text>
             {volunteer.map((entry, index) => (
               <View key={index} style={styles.entryContainer}>
-                <View style={styles.entryHeader}>
-                  <View>
-                    <Text style={styles.entryTitle}>
-                      {entry.position || entry.organization}
-                    </Text>
-                    {entry.position && entry.organization ? (
-                      <Text style={styles.entrySubtitle}>{entry.organization}</Text>
-                    ) : null}
-                  </View>
-                  <DateRange startDate={entry.startDate} endDate={entry.endDate} />
-                </View>
+                <EntryRow
+                  title={entry.position || entry.organization || ''}
+                  subtitle={entry.position && entry.organization ? entry.organization : undefined}
+                  startDate={entry.startDate}
+                  endDate={entry.endDate}
+                />
                 {entry.summary ? <Text style={styles.summary}>{entry.summary}</Text> : null}
                 <BulletList items={entry.highlights} />
               </View>
