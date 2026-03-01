@@ -10,6 +10,7 @@ import { SectionForm } from '@/components/editor/section-form'
 import { TemplateSwitcher } from '@/components/preview/template-switcher'
 import { PageIndicator } from '@/components/preview/page-indicator'
 import { Button } from '@/components/ui/button'
+import { ExportMenu } from '@/components/export/export-menu'
 import { cn } from '@/lib/utils'
 import { Eye, PenLine } from 'lucide-react'
 
@@ -62,7 +63,14 @@ export function EditorLayout() {
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex flex-col min-h-screen">
+      {/* Header bar */}
+      <header className="hidden md:flex items-center justify-between px-6 py-3 border-b bg-background shrink-0">
+        <h1 className="text-lg font-semibold">CV Builder</h1>
+        <ExportMenu />
+      </header>
+
+      <div className="flex flex-1 min-h-0">
       {/* Desktop sidebar */}
       <aside className="hidden md:block w-64 border-r shrink-0">
         <div className="sticky top-0">
@@ -79,7 +87,11 @@ export function EditorLayout() {
 
       {/* Mobile tabs + view toggle */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-10 bg-background border-b">
-        <div className="flex items-center justify-between px-2 pt-2">
+        <div className="flex items-center justify-between px-2 py-1 border-b">
+          <span className="text-sm font-semibold">CV Builder</span>
+          <ExportMenu />
+        </div>
+        <div className="flex items-center justify-between px-2 pt-1 pb-1">
           <div className="overflow-x-auto flex gap-1 flex-1">
             {visibleSections.map((section) => (
               <Button
@@ -142,6 +154,7 @@ export function EditorLayout() {
           </div>
           <PageIndicator />
         </aside>
+      </div>
       </div>
     </div>
   )
