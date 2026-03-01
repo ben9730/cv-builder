@@ -26,7 +26,7 @@ export function isScannedPdf(text: string): boolean {
   return stripped.length < MIN_TEXT_LENGTH
 }
 
-/** Extract text from a PDF buffer using pdfjs-dist. */
+/** Extract text from a PDF buffer using pdfjs-dist, preserving line breaks. */
 export async function extractPdfText(buffer: Uint8Array): Promise<{ text: string; pages: number }> {
   const pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs')
   const doc = await pdfjsLib.getDocument({ data: buffer }).promise
@@ -35,11 +35,19 @@ export async function extractPdfText(buffer: Uint8Array): Promise<{ text: string
   for (let i = 1; i <= doc.numPages; i++) {
     const page = await doc.getPage(i)
     const textContent = await page.getTextContent()
-    const text = textContent.items
-      .filter((item: Record<string, unknown>) => 'str' in item)
-      .map((item: Record<string, unknown>) => item.str as string)
-      .join(' ')
-    pageTexts.push(text)
+    const parts: string[] = []
+
+    for (const item of textContent.items) {
+      if (!('str' in item)) continue
+      const textItem = item as Record<string, unknown>
+      parts.push(textItem.str as string)
+      // Insert newline when pdfjs signals end-of-line
+      if (textItem.hasEOL) {
+        parts.push('\n')
+      }
+    }
+
+    pageTexts.push(parts.join(''))
   }
 
   return { text: pageTexts.join('\n\n'), pages: doc.numPages }
