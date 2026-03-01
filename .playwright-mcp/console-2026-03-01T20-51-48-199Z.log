@@ -1,0 +1,6 @@
+[    2235ms] [ERROR] Error: Unknown font format
+    at Module.$d636bc798e7178db$export$185802fd694ee1f5 (http://localhost:3000/_next/static/chunks/node_modules_fontkit_dist_browser-module_mjs_393a1dbe._.js:82:11)
+    at FontSource._load (http://localhost:3000/_next/static/chunks/node_modules_bd0c85d5._.js:11106:182) @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[    6197ms] [ERROR] Error: Unknown font format
+    at Module.$d636bc798e7178db$export$185802fd694ee1f5 (http://localhost:3000/_next/static/chunks/node_modules_fontkit_dist_browser-module_mjs_393a1dbe._.js:82:11)
+    at FontSource._load (http://localhost:3000/_next/static/chunks/node_modules_bd0c85d5._.js:11106:182) @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
