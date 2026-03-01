@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     fontWeight: 700,
     fontFamily: FONT_FAMILY,
     color: '#FFFFFF',
-    marginBottom: 4,
+    marginBottom: 8,
   },
   label: {
     fontSize: 12,

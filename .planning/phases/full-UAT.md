@@ -1,9 +1,9 @@
 ---
-status: complete
+status: diagnosed
 phase: 01-to-04-full
 source: 01-01-SUMMARY.md, 01-02-SUMMARY.md, 02-01-SUMMARY.md, 02-02-SUMMARY.md, 02-03-SUMMARY.md, 03-01-SUMMARY.md, 03-02-SUMMARY.md, 03-03-SUMMARY.md, 04-01-SUMMARY.md, 04-02-SUMMARY.md
 started: 2026-03-01T18:00:00Z
-updated: 2026-03-01T18:15:00Z
+updated: 2026-03-01T18:50:00Z
 ---
 
 ## Current Test
@@ -84,32 +84,54 @@ result: pass
 expected: After entering data in multiple sections, close the browser tab and reopen http://localhost:3000. All previously entered data should be preserved (loaded from localStorage). Template selection should also persist.
 result: pass
 
+### 18. PDF Upload Import (added post-testing)
+expected: Upload a PDF file via the import dropzone. Text should be extracted and sections displayed in the review panel.
+result: issue
+reported: "big problem with upload pdf - shows Failed to parse PDF error"
+severity: blocker
+
 ## Summary
 
-total: 17
+total: 18
 passed: 15
-issues: 2
+issues: 3
 pending: 0
 skipped: 0
 
 ## Gaps
 
 - truth: "PDF header should display name and headline without overlapping text"
-  status: failed
+  status: fixed
   reason: "User reported: pass but the headline in the pdf itself overlay with title"
   severity: cosmetic
   test: 11
-  root_cause: ""
-  artifacts: []
-  missing: []
-  debug_session: ""
+  root_cause: "Modern template name style has marginBottom: 4 too small for 24pt font, causing label to overlap"
+  artifacts:
+    - path: "src/components/templates/modern-template.tsx"
+      issue: "marginBottom: 4 on name style too small"
+  missing:
+    - "Increase marginBottom to 8 for proper spacing"
 
 - truth: "Review panel should display all parsed sections from pasted text so user can see/verify all imported content"
-  status: failed
+  status: fixed
   reason: "User reported: pass but didnt give me option to see all the info i past"
   severity: major
   test: 15
-  root_cause: ""
-  artifacts: []
-  missing: []
-  debug_session: ""
+  root_cause: "Review panel textareas have min-h-[60px] too small to see pasted content"
+  artifacts:
+    - path: "src/components/import/review-panel.tsx"
+      issue: "Textarea min-height 60px too small"
+  missing:
+    - "Increase textarea min-height to 120px"
+
+- truth: "PDF upload should extract text and display in review panel"
+  status: fixed
+  reason: "User reported: big problem with upload pdf - shows Failed to parse PDF error"
+  severity: blocker
+  test: 18
+  root_cause: "pdfjs-dist worker file not found when bundled by Turbopack. Next.js bundles into .next/dev/server/chunks/ but worker relative path breaks."
+  artifacts:
+    - path: "next.config.ts"
+      issue: "pdfjs-dist not excluded from server bundling"
+  missing:
+    - "Add serverExternalPackages: ['pdfjs-dist'] to next.config.ts"

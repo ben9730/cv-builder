@@ -95,7 +95,7 @@ export function ReviewPanel({ sections, onAccept, onCancel }: ReviewPanelProps) 
                 value={sectionStates[index].content}
                 onChange={(e) => updateContent(index, e.target.value)}
                 disabled={!sectionStates[index].checked}
-                className="text-xs min-h-[60px] resize-y"
+                className="text-xs min-h-[120px] resize-y"
                 aria-label={`${formatSectionType(section.type)} content`}
               />
             </CardContent>
