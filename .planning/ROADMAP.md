@@ -28,11 +28,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. Resume data written to the Zustand store persists in localStorage across page refreshes without any user action
   3. The resume data structure can be serialized to JSON and deserialized back without data loss
   4. The store auto-saves anonymously — no login required for persistence to work
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 01-01: Project scaffold, TypeScript config, Tailwind CSS 4, Zustand store setup
-- [ ] 01-02: ResumeData schema (Zod 4, JSON Resume-aligned), localStorage persistence hook
+- [ ] 01-01-PLAN.md — Scaffold Next.js 16 project with TypeScript, Tailwind CSS 4, Zustand, Zod, and Vitest
+- [ ] 01-02-PLAN.md — ResumeData Zod 4 schema, Zustand store with localStorage persistence, unit tests
 
 ### Phase 2: Editor
 **Goal**: Users can fill in every resume section using a clean form-based interface that works on desktop and mobile
@@ -85,7 +85,7 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
