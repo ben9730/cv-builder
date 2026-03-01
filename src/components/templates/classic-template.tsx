@@ -14,12 +14,12 @@ const styles = StyleSheet.create({
     color: '#333333',
     lineHeight: 1.4,
   },
-  // Header
+  // Header — generous spacing to prevent overlaps
   header: {
-    marginBottom: 4,
+    marginBottom: 2,
   },
   name: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 700,
     fontFamily: FONT_FAMILY,
     color: '#000000',
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: FONT_FAMILY,
     color: '#444444',
-    marginBottom: 4,
+    marginBottom: 2,
   },
   // Body text
   summary: {

@@ -1,6 +1,14 @@
 import { View, Text, StyleSheet } from '@react-pdf/renderer'
 import type { ContactInfo } from '@/types/resume'
 import { FONT_FAMILY } from '../fonts'
+import {
+  MailIcon,
+  PhoneIcon,
+  MapPinIcon,
+  LinkedInIcon,
+  GitHubIcon,
+  GlobeIcon,
+} from './pdf-icons'
 
 const primitiveStyles = StyleSheet.create({
   // Section title with colored underline (FlowCV style)
@@ -67,17 +75,26 @@ const primitiveStyles = StyleSheet.create({
     color: '#333333',
     lineHeight: 1.45,
   },
-  // Contact line — clean pipe-separated text (no icons)
-  contactText: {
+  // Contact line with icons — FlowCV style
+  contactRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  contactItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 20,
+    marginBottom: 2,
+  },
+  contactItemText: {
     fontSize: 9.5,
     fontFamily: FONT_FAMILY,
-    color: '#555555',
-    marginTop: 5,
+    color: '#333333',
+    marginLeft: 5,
   },
-  contactSep: {
-    color: '#AAAAAA',
-  },
-  // Centered contact (for Minimal template)
+  // Pipe-separated contact (for Minimal template, no icons)
   contactTextCentered: {
     fontSize: 9.5,
     fontFamily: FONT_FAMILY,
@@ -85,26 +102,43 @@ const primitiveStyles = StyleSheet.create({
     marginTop: 4,
     textAlign: 'center',
   },
+  contactSep: {
+    color: '#AAAAAA',
+  },
 })
 
 /**
- * Build flat list of contact text strings from basics data.
+ * Map a contact field type to its SVG icon component.
  */
-function buildContactTexts(basics: ContactInfo): string[] {
-  const items: string[] = []
-  if (basics.email) items.push(basics.email)
-  if (basics.phone) items.push(basics.phone)
+function getContactIcon(type: string): React.FC<{ size?: number; color?: string }> {
+  const lower = type.toLowerCase()
+  if (lower === 'email') return MailIcon
+  if (lower === 'phone') return PhoneIcon
+  if (lower === 'location') return MapPinIcon
+  if (lower === 'linkedin') return LinkedInIcon
+  if (lower === 'github') return GitHubIcon
+  return GlobeIcon
+}
+
+/**
+ * Build structured contact items with type info for icon selection.
+ */
+function buildContactItems(basics: ContactInfo): { type: string; text: string }[] {
+  const items: { type: string; text: string }[] = []
+  if (basics.email) items.push({ type: 'email', text: basics.email })
+  if (basics.phone) items.push({ type: 'phone', text: basics.phone })
   if (basics.location?.city) {
     const loc = [basics.location.city, basics.location.region]
       .filter(Boolean)
       .join(', ')
-    if (loc) items.push(loc)
+    if (loc) items.push({ type: 'location', text: loc })
   }
-  if (basics.url) items.push(basics.url)
+  if (basics.url) items.push({ type: 'url', text: basics.url })
   if (basics.profiles && basics.profiles.length > 0) {
     for (const profile of basics.profiles) {
-      const display = profile.url || profile.username || profile.network
-      if (display) items.push(display)
+      const network = (profile.network || '').toLowerCase()
+      const display = profile.network || profile.url || profile.username
+      if (display) items.push({ type: network || 'url', text: display })
     }
   }
   return items
@@ -212,25 +246,25 @@ export function BulletList({ items }: { items: string[] }) {
 }
 
 /**
- * Contact line with clean pipe separators — no icons.
- * Professional style: "email  |  phone  |  location"
+ * Contact line with SVG icons — FlowCV style.
+ * Each item: icon + text, evenly spaced across the width.
  */
 export function ContactLineModern({ basics }: { basics: ContactInfo }) {
-  const items = buildContactTexts(basics)
+  const items = buildContactItems(basics)
   if (items.length === 0) return null
 
   return (
-    <Text style={primitiveStyles.contactText}>
-      {items.map((item, i) => {
-        if (i === 0) return <Text key={i}>{item}</Text>
+    <View style={primitiveStyles.contactRow}>
+      {items.map((item, index) => {
+        const IconComponent = getContactIcon(item.type)
         return (
-          <Text key={i}>
-            <Text style={primitiveStyles.contactSep}>{'  |  '}</Text>
-            {item}
-          </Text>
+          <View key={index} style={primitiveStyles.contactItem}>
+            <IconComponent size={10} color="#333333" />
+            <Text style={primitiveStyles.contactItemText}>{item.text}</Text>
+          </View>
         )
       })}
-    </Text>
+    </View>
   )
 }
 
@@ -238,17 +272,17 @@ export function ContactLineModern({ basics }: { basics: ContactInfo }) {
  * Contact line centered with pipe separators (for Minimal template).
  */
 export function ContactLine({ basics }: { basics: ContactInfo }) {
-  const items = buildContactTexts(basics)
+  const items = buildContactItems(basics)
   if (items.length === 0) return null
 
   return (
     <Text style={primitiveStyles.contactTextCentered}>
       {items.map((item, i) => {
-        if (i === 0) return <Text key={i}>{item}</Text>
+        if (i === 0) return <Text key={i}>{item.text}</Text>
         return (
           <Text key={i}>
             <Text style={primitiveStyles.contactSep}>{'  |  '}</Text>
-            {item}
+            {item.text}
           </Text>
         )
       })}
