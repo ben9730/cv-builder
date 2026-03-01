@@ -11,8 +11,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [x] **FOUN-01**: Resume data model supports ordered sections with structured fields (contact, summary, experience, education, skills)
 - [x] **FOUN-02**: Data model supports optional section types (certifications, projects, languages, volunteer)
-- [ ] **FOUN-03**: Resume data persists in localStorage for anonymous users across page refreshes
-- [ ] **FOUN-04**: Resume data is serializable to JSON for storage and export
+- [x] **FOUN-03**: Resume data persists in localStorage for anonymous users across page refreshes
+- [x] **FOUN-04**: Resume data is serializable to JSON for storage and export
 
 ### Editor
 
@@ -48,7 +48,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Persistence
 
-- [ ] **PERS-01**: Anonymous user data saved to localStorage automatically
+- [x] **PERS-01**: Anonymous user data saved to localStorage automatically
 - [ ] **PERS-02**: User can export resume data as JSON file (backup for localStorage volatility)
 
 ### UI
@@ -100,9 +100,9 @@ Deferred to future release. Tracked but not in current roadmap.
 |-------------|-------|--------|
 | FOUN-01 | Phase 1 | Complete |
 | FOUN-02 | Phase 1 | Complete |
-| FOUN-03 | Phase 1 | Pending |
-| FOUN-04 | Phase 1 | Pending |
-| PERS-01 | Phase 1 | Pending |
+| FOUN-03 | Phase 1 | Complete |
+| FOUN-04 | Phase 1 | Complete |
+| PERS-01 | Phase 1 | Complete |
 | EDIT-01 | Phase 2 | Pending |
 | EDIT-02 | Phase 2 | Pending |
 | EDIT-03 | Phase 2 | Pending |

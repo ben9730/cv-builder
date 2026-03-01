@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-03-01)
 ## Current Position
 
 Phase: 1 of 4 (Foundation)
-Plan: 1 of 2 in current phase
-Status: Executing
-Last activity: 2026-03-01 — Completed Plan 01-01 (project scaffold)
+Plan: 2 of 2 in current phase
+Status: Phase 1 complete
+Last activity: 2026-03-01 — Completed Plan 01-02 (schema, store, tests)
 
-Progress: [█░░░░░░░░░] 10%
+Progress: [██░░░░░░░░] 20%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1
-- Average duration: 6 min
-- Total execution time: 0.1 hours
+- Total plans completed: 2
+- Average duration: 4.5 min
+- Total execution time: 0.15 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 1-Foundation | 1/2 | 6 min | 6 min |
+| 1-Foundation | 2/2 | 9 min | 4.5 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (6 min)
-- Trend: Starting
+- Last 5 plans: 01-01 (6 min), 01-02 (3 min)
+- Trend: Accelerating
 
 *Updated after each plan completion*
 
@@ -46,6 +46,8 @@ Recent decisions affecting current work:
 - Testing: Vitest 4.0.18 + jsdom + @testing-library/react, path aliases via vite-tsconfig-paths
 - Tailwind v4: CSS-first config via @tailwindcss/postcss, no JS config file
 - Schema: JSON Resume v1 standard, Zod 4 validated, ordered arrays (not fixed-key objects) to support reordering
+- Zod 4 gotcha: nested .default({}) returns raw value; use pre-parsed constants for nested objects
+- Zustand persist: version 1 set, createJSONStorage for SSR safety, useHydration hook required in client components
 - PDF export: @react-pdf/renderer client-side only (dynamic import, ssr: false) — Puppeteer ruled out for serverless
 - Auth: Optional, deferred to v2 — all core features work via localStorage
 
@@ -61,5 +63,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed 01-01-PLAN.md, proceeding to 01-02
+Stopped at: Completed all Phase 1 plans (01-01 and 01-02)
 Resume file: None
