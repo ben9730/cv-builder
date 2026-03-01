@@ -1,6 +1,6 @@
 import { Document, Page, View, Text, StyleSheet } from '@react-pdf/renderer'
 import { FONT_FAMILY } from './fonts'
-import { SectionTitle, DateRange, BulletList, ContactLine } from './shared/pdf-primitives'
+import { SectionTitle, DateRange, BulletList, ContactLineModern } from './shared/pdf-primitives'
 import type { ResumeData } from '@/types/resume'
 
 const styles = StyleSheet.create({
@@ -12,17 +12,17 @@ const styles = StyleSheet.create({
     lineHeight: 1.4,
   },
   header: {
-    marginBottom: 12,
+    marginBottom: 4,
   },
   name: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: 700,
     fontFamily: FONT_FAMILY,
     color: '#1A202C',
-    marginBottom: 2,
+    marginBottom: 6,
   },
   label: {
-    fontSize: 12,
+    fontSize: 11,
     color: '#4A5568',
     fontFamily: FONT_FAMILY,
     marginBottom: 6,
@@ -31,11 +31,11 @@ const styles = StyleSheet.create({
     fontSize: 9,
     color: '#2D3748',
     fontFamily: FONT_FAMILY,
-    lineHeight: 1.5,
+    lineHeight: 1.6,
     marginBottom: 4,
   },
   entryContainer: {
-    marginBottom: 8,
+    marginBottom: 10,
   },
   entryHeader: {
     flexDirection: 'row',
@@ -43,11 +43,22 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     marginBottom: 2,
   },
+  entryTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    flexWrap: 'wrap',
+    maxWidth: '80%',
+  },
   entryTitle: {
     fontSize: 10,
     fontWeight: 700,
     fontFamily: FONT_FAMILY,
     color: '#1A202C',
+  },
+  entryCompany: {
+    fontSize: 10,
+    fontFamily: FONT_FAMILY,
+    color: '#4A5568',
   },
   entrySubtitle: {
     fontSize: 9,
@@ -90,8 +101,6 @@ const styles = StyleSheet.create({
   },
 })
 
-const ACCENT_COLOR = '#4A5568'
-
 export function ClassicTemplate({ resume }: { resume: ResumeData }) {
   const { basics, work, education, skills, certificates, projects, languages, volunteer } = resume
 
@@ -102,31 +111,31 @@ export function ClassicTemplate({ resume }: { resume: ResumeData }) {
         <View style={styles.header}>
           {basics.name ? <Text style={styles.name}>{basics.name}</Text> : null}
           {basics.label ? <Text style={styles.label}>{basics.label}</Text> : null}
-          <ContactLine basics={basics} />
+          <ContactLineModern basics={basics} />
         </View>
 
-        {/* Summary */}
+        {/* Profile */}
         {basics.summary ? (
           <View>
-            <SectionTitle title="Summary" color={ACCENT_COLOR} />
+            <SectionTitle title="Profile" />
             <Text style={styles.summary}>{basics.summary}</Text>
           </View>
         ) : null}
 
-        {/* Experience */}
+        {/* Work Experience */}
         {work && work.length > 0 ? (
           <View>
-            <SectionTitle title="Experience" color={ACCENT_COLOR} />
+            <SectionTitle title="Work Experience" />
             {work.map((entry, index) => (
               <View key={index} style={styles.entryContainer}>
                 <View style={styles.entryHeader}>
-                  <View>
-                    <Text style={styles.entryTitle}>{entry.name}</Text>
-                    {entry.position ? (
-                      <Text style={styles.entrySubtitle}>
-                        {entry.position}
-                        {entry.location ? ` - ${entry.location}` : ''}
-                      </Text>
+                  <View style={styles.entryTitleRow}>
+                    <Text style={styles.entryTitle}>
+                      {entry.position || entry.name}
+                      {entry.position && entry.name ? ', ' : ''}
+                    </Text>
+                    {entry.position && entry.name ? (
+                      <Text style={styles.entryCompany}>{entry.name}</Text>
                     ) : null}
                   </View>
                   <DateRange startDate={entry.startDate} endDate={entry.endDate} />
@@ -141,16 +150,17 @@ export function ClassicTemplate({ resume }: { resume: ResumeData }) {
         {/* Education */}
         {education && education.length > 0 ? (
           <View>
-            <SectionTitle title="Education" color={ACCENT_COLOR} />
+            <SectionTitle title="Education" />
             {education.map((entry, index) => (
               <View key={index} style={styles.entryContainer}>
                 <View style={styles.entryHeader}>
-                  <View>
-                    <Text style={styles.entryTitle}>{entry.institution}</Text>
-                    {(entry.studyType || entry.area) ? (
-                      <Text style={styles.entrySubtitle}>
-                        {[entry.studyType, entry.area].filter(Boolean).join(' in ')}
-                      </Text>
+                  <View style={styles.entryTitleRow}>
+                    <Text style={styles.entryTitle}>
+                      {[entry.studyType, entry.area].filter(Boolean).join(' in ')}
+                      {(entry.studyType || entry.area) && entry.institution ? ', ' : ''}
+                    </Text>
+                    {entry.institution ? (
+                      <Text style={styles.entryCompany}>{entry.institution}</Text>
                     ) : null}
                   </View>
                   <DateRange startDate={entry.startDate} endDate={entry.endDate} />
@@ -166,7 +176,7 @@ export function ClassicTemplate({ resume }: { resume: ResumeData }) {
         {/* Skills */}
         {skills && skills.length > 0 ? (
           <View>
-            <SectionTitle title="Skills" color={ACCENT_COLOR} />
+            <SectionTitle title="Skills" />
             {skills.map((skill, index) => (
               <View key={index} style={styles.skillCategory}>
                 {skill.name ? <Text style={styles.skillName}>{skill.name}:</Text> : null}
@@ -178,30 +188,10 @@ export function ClassicTemplate({ resume }: { resume: ResumeData }) {
           </View>
         ) : null}
 
-        {/* Certifications */}
-        {certificates && certificates.length > 0 ? (
-          <View>
-            <SectionTitle title="Certifications" color={ACCENT_COLOR} />
-            {certificates.map((cert, index) => (
-              <View key={index} style={styles.entryContainer}>
-                <View style={styles.entryHeader}>
-                  <Text style={styles.entryTitle}>{cert.name}</Text>
-                  {cert.date ? (
-                    <Text style={{ fontSize: 9, color: '#718096', fontFamily: FONT_FAMILY }}>{cert.date}</Text>
-                  ) : null}
-                </View>
-                {cert.issuer ? (
-                  <Text style={styles.entrySubtitle}>{cert.issuer}</Text>
-                ) : null}
-              </View>
-            ))}
-          </View>
-        ) : null}
-
         {/* Projects */}
         {projects && projects.length > 0 ? (
           <View>
-            <SectionTitle title="Projects" color={ACCENT_COLOR} />
+            <SectionTitle title="Projects" />
             {projects.map((project, index) => (
               <View key={index} style={styles.entryContainer}>
                 <View style={styles.entryHeader}>
@@ -222,10 +212,30 @@ export function ClassicTemplate({ resume }: { resume: ResumeData }) {
           </View>
         ) : null}
 
+        {/* Certifications */}
+        {certificates && certificates.length > 0 ? (
+          <View>
+            <SectionTitle title="Certifications" />
+            {certificates.map((cert, index) => (
+              <View key={index} style={styles.entryContainer}>
+                <View style={styles.entryHeader}>
+                  <Text style={styles.entryTitle}>{cert.name}</Text>
+                  {cert.date ? (
+                    <Text style={{ fontSize: 9, color: '#718096', fontFamily: FONT_FAMILY }}>{cert.date}</Text>
+                  ) : null}
+                </View>
+                {cert.issuer ? (
+                  <Text style={styles.entrySubtitle}>{cert.issuer}</Text>
+                ) : null}
+              </View>
+            ))}
+          </View>
+        ) : null}
+
         {/* Languages */}
         {languages && languages.length > 0 ? (
           <View>
-            <SectionTitle title="Languages" color={ACCENT_COLOR} />
+            <SectionTitle title="Languages" />
             {languages.map((lang, index) => (
               <View key={index} style={styles.languageRow}>
                 <Text style={styles.languageName}>{lang.language}</Text>
@@ -240,14 +250,17 @@ export function ClassicTemplate({ resume }: { resume: ResumeData }) {
         {/* Volunteer */}
         {volunteer && volunteer.length > 0 ? (
           <View>
-            <SectionTitle title="Volunteer" color={ACCENT_COLOR} />
+            <SectionTitle title="Volunteer" />
             {volunteer.map((entry, index) => (
               <View key={index} style={styles.entryContainer}>
                 <View style={styles.entryHeader}>
-                  <View>
-                    <Text style={styles.entryTitle}>{entry.organization}</Text>
-                    {entry.position ? (
-                      <Text style={styles.entrySubtitle}>{entry.position}</Text>
+                  <View style={styles.entryTitleRow}>
+                    <Text style={styles.entryTitle}>
+                      {entry.position || entry.organization}
+                      {entry.position && entry.organization ? ', ' : ''}
+                    </Text>
+                    {entry.position && entry.organization ? (
+                      <Text style={styles.entryCompany}>{entry.organization}</Text>
                     ) : null}
                   </View>
                   <DateRange startDate={entry.startDate} endDate={entry.endDate} />

@@ -12,7 +12,7 @@ export function TemplateSwitcher() {
   const templateEntries = Object.values(TEMPLATES)
 
   return (
-    <div className="flex gap-2 p-2">
+    <div className="flex gap-2 p-3 border-b border-border/40 bg-card/60">
       {templateEntries.map((template) => {
         const isActive = selectedTemplate === template.id
         return (
@@ -20,23 +20,23 @@ export function TemplateSwitcher() {
             key={template.id}
             onClick={() => setSelectedTemplate(template.id as TemplateId)}
             className={cn(
-              'flex-1 rounded-lg border-2 p-2 text-center transition-all cursor-pointer',
-              'hover:border-primary/50 hover:shadow-sm',
+              'flex-1 rounded-lg border px-3 py-2 text-center transition-all duration-200 cursor-pointer',
+              'hover:shadow-sm',
               isActive
-                ? 'border-primary bg-primary/5 shadow-sm'
-                : 'border-muted bg-background'
+                ? 'border-primary/30 bg-card shadow-sm'
+                : 'border-transparent bg-muted/50 hover:border-border/60 hover:bg-card/80'
             )}
             aria-label={`Select ${template.name} template`}
             aria-pressed={isActive}
           >
             {/* Accent color indicator */}
             <div
-              className="h-1.5 w-full rounded-full mb-2"
+              className="h-1 w-full rounded-full mb-1.5"
               style={{ backgroundColor: template.accentColor }}
             />
             <span className={cn(
               'text-xs font-medium',
-              isActive ? 'text-primary' : 'text-muted-foreground'
+              isActive ? 'text-foreground' : 'text-muted-foreground'
             )}>
               {template.name}
             </span>

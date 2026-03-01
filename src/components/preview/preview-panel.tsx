@@ -18,7 +18,7 @@ export default function PreviewPanel() {
 
   return (
     <div className="h-full w-full flex flex-col items-center bg-muted/30 p-4">
-      <div className="w-full h-full rounded-lg overflow-hidden shadow-lg border bg-white">
+      <div className="w-full h-full rounded-xl overflow-hidden shadow-lg border border-border/40 bg-white">
         <PDFViewer width="100%" height="100%" showToolbar={false}>
           {documentElement}
         </PDFViewer>

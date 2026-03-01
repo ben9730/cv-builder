@@ -4,6 +4,7 @@ import { DateRange, BulletList } from './shared/pdf-primitives'
 import type { ResumeData } from '@/types/resume'
 
 const ACCENT = '#2B6CB0'
+const ACCENT_LIGHT = '#EBF8FF'
 
 const styles = StyleSheet.create({
   page: {
@@ -15,31 +16,39 @@ const styles = StyleSheet.create({
   // Full-width header block
   headerBlock: {
     backgroundColor: ACCENT,
-    padding: 30,
-    paddingBottom: 20,
+    paddingHorizontal: 30,
+    paddingTop: 28,
+    paddingBottom: 18,
   },
   name: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: 700,
     fontFamily: FONT_FAMILY,
     color: '#FFFFFF',
-    marginBottom: 8,
+    marginBottom: 4,
   },
   label: {
-    fontSize: 12,
+    fontSize: 11,
     fontFamily: FONT_FAMILY,
     color: '#BEE3F8',
-    marginBottom: 6,
+    marginBottom: 8,
   },
   headerContact: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
+    alignItems: 'center',
+    gap: 4,
   },
   headerContactItem: {
-    fontSize: 9,
+    fontSize: 8.5,
     fontFamily: FONT_FAMILY,
     color: '#E2E8F0',
+  },
+  headerContactDot: {
+    fontSize: 6,
+    fontFamily: FONT_FAMILY,
+    color: '#90CDF4',
+    marginHorizontal: 3,
   },
   // Two-column body
   body: {
@@ -48,17 +57,17 @@ const styles = StyleSheet.create({
   },
   sidebar: {
     width: '30%',
-    backgroundColor: '#EBF8FF',
-    padding: 20,
-    paddingTop: 16,
+    backgroundColor: ACCENT_LIGHT,
+    padding: 18,
+    paddingTop: 14,
   },
   main: {
     width: '70%',
     padding: 20,
-    paddingTop: 16,
+    paddingTop: 14,
   },
   sectionTitle: {
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: 700,
     fontFamily: FONT_FAMILY,
     color: ACCENT,
@@ -68,11 +77,11 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   sidebarSectionTitle: {
-    fontSize: 10,
+    fontSize: 9,
     fontWeight: 700,
     fontFamily: FONT_FAMILY,
     color: ACCENT,
-    marginBottom: 6,
+    marginBottom: 5,
     marginTop: 10,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
@@ -106,19 +115,20 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   skillCategory: {
-    marginBottom: 6,
+    marginBottom: 5,
   },
   skillName: {
-    fontSize: 9,
+    fontSize: 8.5,
     fontWeight: 700,
     fontFamily: FONT_FAMILY,
     color: '#1A202C',
-    marginBottom: 2,
+    marginBottom: 1,
   },
   skillKeywords: {
     fontSize: 8,
     fontFamily: FONT_FAMILY,
     color: '#4A5568',
+    lineHeight: 1.4,
   },
   contactItem: {
     fontSize: 8,
@@ -126,21 +136,13 @@ const styles = StyleSheet.create({
     color: '#2D3748',
     marginBottom: 3,
   },
-  contactLabel: {
-    fontSize: 7,
-    fontFamily: FONT_FAMILY,
-    color: '#718096',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-    marginBottom: 1,
-  },
   languageRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 2,
   },
   languageName: {
-    fontSize: 9,
+    fontSize: 8.5,
     fontFamily: FONT_FAMILY,
     color: '#1A202C',
   },
@@ -153,7 +155,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   certName: {
-    fontSize: 9,
+    fontSize: 8.5,
     fontWeight: 700,
     fontFamily: FONT_FAMILY,
     color: '#1A202C',
@@ -168,6 +170,7 @@ const styles = StyleSheet.create({
 export function ModernTemplate({ resume }: { resume: ResumeData }) {
   const { basics, work, education, skills, certificates, projects, languages, volunteer } = resume
 
+  // Build contact parts — only include actual contact info, not arbitrary text
   const contactParts: string[] = []
   if (basics.email) contactParts.push(basics.email)
   if (basics.phone) contactParts.push(basics.phone)
@@ -176,6 +179,13 @@ export function ModernTemplate({ resume }: { resume: ResumeData }) {
     if (loc) contactParts.push(loc)
   }
   if (basics.url) contactParts.push(basics.url)
+  // Add profile URLs if available
+  if (basics.profiles && basics.profiles.length > 0) {
+    for (const profile of basics.profiles) {
+      if (profile.url) contactParts.push(profile.url)
+      else if (profile.username && profile.network) contactParts.push(`${profile.network}: ${profile.username}`)
+    }
+  }
 
   return (
     <Document>
@@ -187,9 +197,10 @@ export function ModernTemplate({ resume }: { resume: ResumeData }) {
           {contactParts.length > 0 ? (
             <View style={styles.headerContact}>
               {contactParts.map((part, i) => (
-                <Text key={i} style={styles.headerContactItem}>
-                  {part}
-                </Text>
+                <View key={i} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  {i > 0 && <Text style={styles.headerContactDot}>{'\u2022'}</Text>}
+                  <Text style={styles.headerContactItem}>{part}</Text>
+                </View>
               ))}
             </View>
           ) : null}
@@ -197,7 +208,7 @@ export function ModernTemplate({ resume }: { resume: ResumeData }) {
 
         {/* Two-column body */}
         <View style={styles.body}>
-          {/* Sidebar: skills, languages, certifications, contact details */}
+          {/* Sidebar: skills, languages, certifications */}
           <View style={styles.sidebar}>
             {/* Skills in sidebar */}
             {skills && skills.length > 0 ? (
@@ -257,12 +268,14 @@ export function ModernTemplate({ resume }: { resume: ResumeData }) {
                 {work.map((entry, index) => (
                   <View key={index} style={styles.entryContainer}>
                     <View style={styles.entryHeader}>
-                      <View>
-                        <Text style={styles.entryTitle}>{entry.name}</Text>
-                        {entry.position ? (
+                      <View style={{ maxWidth: '75%' }}>
+                        <Text style={styles.entryTitle}>
+                          {entry.position || entry.name}
+                        </Text>
+                        {entry.position && entry.name ? (
                           <Text style={styles.entrySubtitle}>
-                            {entry.position}
-                            {entry.location ? ` | ${entry.location}` : ''}
+                            {entry.name}
+                            {entry.location ? ` \u2013 ${entry.location}` : ''}
                           </Text>
                         ) : null}
                       </View>
@@ -323,8 +336,12 @@ export function ModernTemplate({ resume }: { resume: ResumeData }) {
                   <View key={index} style={styles.entryContainer}>
                     <View style={styles.entryHeader}>
                       <View>
-                        <Text style={styles.entryTitle}>{entry.organization}</Text>
-                        {entry.position ? <Text style={styles.entrySubtitle}>{entry.position}</Text> : null}
+                        <Text style={styles.entryTitle}>
+                          {entry.position || entry.organization}
+                        </Text>
+                        {entry.position && entry.organization ? (
+                          <Text style={styles.entrySubtitle}>{entry.organization}</Text>
+                        ) : null}
                       </View>
                       <DateRange startDate={entry.startDate} endDate={entry.endDate} />
                     </View>

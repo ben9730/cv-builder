@@ -206,6 +206,23 @@ export function extractContact(lines: string[]): {
     }
   }
 
+  // Fallback: if no clean name line found, try to extract name from mixed lines
+  // by stripping email, phone, and URL patterns from lines
+  if (!name) {
+    for (const line of lines) {
+      const cleaned = line
+        .replace(EMAIL_PATTERN, '')
+        .replace(URL_PATTERN, '')
+        .replace(/(?:\+?\d[\d\s\-().]{6,}\d)/, '')
+        .replace(/[|,;]+/g, ' ')
+        .trim()
+      if (cleaned.length > 1 && cleaned.length < 60 && /[a-zA-Z]/.test(cleaned)) {
+        name = cleaned
+        break
+      }
+    }
+  }
+
   // Location: look for city/state patterns
   for (const line of lines) {
     if (/\b[A-Z][a-z]+,\s*[A-Z]{2}\b/.test(line) || /\b\d{5}\b/.test(line)) {

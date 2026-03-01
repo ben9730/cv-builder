@@ -16,11 +16,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   name: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 700,
     fontFamily: FONT_FAMILY,
     color: '#1A202C',
-    letterSpacing: 1.5,
+    letterSpacing: 2,
     textTransform: 'uppercase',
     marginBottom: 4,
   },
@@ -33,7 +33,8 @@ const styles = StyleSheet.create({
   contactLine: {
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 10,
+    flexWrap: 'wrap',
+    gap: 4,
     fontSize: 8,
     fontFamily: FONT_FAMILY,
     color: '#718096',
@@ -185,11 +186,13 @@ export function MinimalTemplate({ resume }: { resume: ResumeData }) {
               <View key={index} style={styles.entryContainer}>
                 <View style={styles.entryHeader}>
                   <View>
-                    <Text style={styles.entryTitle}>{entry.name}</Text>
-                    {entry.position ? (
+                    <Text style={styles.entryTitle}>
+                      {entry.position || entry.name}
+                    </Text>
+                    {entry.position && entry.name ? (
                       <Text style={styles.entrySubtitle}>
-                        {entry.position}
-                        {entry.location ? ` — ${entry.location}` : ''}
+                        {entry.name}
+                        {entry.location ? ` \u2014 ${entry.location}` : ''}
                       </Text>
                     ) : null}
                   </View>
@@ -250,7 +253,7 @@ export function MinimalTemplate({ resume }: { resume: ResumeData }) {
                 <Text style={styles.certName}>{cert.name}</Text>
                 {(cert.issuer || cert.date) ? (
                   <Text style={styles.certDetail}>
-                    {[cert.issuer, cert.date].filter(Boolean).join(' — ')}
+                    {[cert.issuer, cert.date].filter(Boolean).join(' \u2014 ')}
                   </Text>
                 ) : null}
               </View>
@@ -299,8 +302,12 @@ export function MinimalTemplate({ resume }: { resume: ResumeData }) {
               <View key={index} style={styles.entryContainer}>
                 <View style={styles.entryHeader}>
                   <View>
-                    <Text style={styles.entryTitle}>{entry.organization}</Text>
-                    {entry.position ? <Text style={styles.entrySubtitle}>{entry.position}</Text> : null}
+                    <Text style={styles.entryTitle}>
+                      {entry.position || entry.organization}
+                    </Text>
+                    {entry.position && entry.organization ? (
+                      <Text style={styles.entrySubtitle}>{entry.organization}</Text>
+                    ) : null}
                   </View>
                   <DateRange startDate={entry.startDate} endDate={entry.endDate} />
                 </View>

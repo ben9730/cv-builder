@@ -19,7 +19,7 @@ export const TEMPLATES: Record<TemplateId, TemplateDefinition> = {
     name: 'Classic',
     description: 'Clean professional style',
     component: ClassicTemplate,
-    accentColor: '#4A5568',
+    accentColor: '#312E81',
   },
   modern: {
     id: 'modern',
