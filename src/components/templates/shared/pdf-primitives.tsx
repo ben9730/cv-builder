@@ -3,41 +3,36 @@ import type { ContactInfo } from '@/types/resume'
 import { FONT_FAMILY } from '../fonts'
 
 const primitiveStyles = StyleSheet.create({
-  // Section title with thin underline
+  // Section title with colored underline (FlowCV style)
   sectionTitleContainer: {
-    marginTop: 14,
+    marginTop: 16,
     marginBottom: 8,
+    paddingBottom: 4,
+    borderBottomWidth: 1.5,
+    borderBottomStyle: 'solid',
+    borderBottomColor: '#2B6CB0',
   },
   sectionTitleText: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: 700,
     fontFamily: FONT_FAMILY,
     color: '#1A202C',
-    marginBottom: 4,
   },
-  sectionUnderline: {
-    borderBottomWidth: 0.75,
-    borderBottomColor: '#CBD5E0',
-    borderBottomStyle: 'solid',
-  },
-  // Legacy colored bar (for templates that want it)
-  sectionTitleBar: {
-    width: 30,
-    height: 2,
-    marginBottom: 8,
-  },
+  // Date range
   dateRange: {
     fontSize: 9,
     color: '#718096',
     fontFamily: FONT_FAMILY,
+    flexShrink: 0,
   },
+  // Bullet list
   bulletItem: {
     flexDirection: 'row',
     marginBottom: 2,
-    paddingLeft: 8,
+    paddingLeft: 4,
   },
   bulletDot: {
-    width: 10,
+    width: 12,
     fontSize: 9,
     fontFamily: FONT_FAMILY,
     color: '#718096',
@@ -46,53 +41,55 @@ const primitiveStyles = StyleSheet.create({
     flex: 1,
     fontSize: 9,
     fontFamily: FONT_FAMILY,
-    color: '#2D3748',
-    lineHeight: 1.4,
+    color: '#374151',
+    lineHeight: 1.5,
   },
-  contactLine: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 4,
-    fontSize: 9,
-    fontFamily: FONT_FAMILY,
-    color: '#718096',
-  },
-  contactSeparator: {
-    color: '#CBD5E0',
-  },
-  // Modern contact line with icon-style labels
-  contactRowModern: {
+  // Contact line with icons (FlowCV style)
+  contactRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'center',
-    gap: 6,
-    fontSize: 9,
-    fontFamily: FONT_FAMILY,
-    color: '#4A5568',
+    gap: 4,
+    marginTop: 2,
   },
-  contactItemModern: {
+  contactItem: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 3,
   },
   contactIcon: {
     fontSize: 8,
-    color: '#718096',
+    fontFamily: FONT_FAMILY,
+    color: '#6B7280',
   },
   contactText: {
     fontSize: 9,
     fontFamily: FONT_FAMILY,
-    color: '#4A5568',
+    color: '#4B5563',
   },
-  contactDot: {
-    fontSize: 6,
-    color: '#CBD5E0',
-    marginHorizontal: 2,
+  contactSeparator: {
+    fontSize: 4,
+    fontFamily: FONT_FAMILY,
+    color: '#D1D5DB',
+    marginHorizontal: 4,
+  },
+  // Pipe-separated contact (for minimal template)
+  contactLinePipe: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: 4,
+    fontSize: 8.5,
+    fontFamily: FONT_FAMILY,
+    color: '#6B7280',
+  },
+  contactPipeSep: {
+    color: '#D1D5DB',
   },
 })
 
 /**
- * Section title with thin underline (matches reference design).
+ * Section title with colored underline rule (FlowCV style).
  */
 export function SectionTitle({
   title,
@@ -103,40 +100,20 @@ export function SectionTitle({
   style?: object
 }) {
   return (
-    <View style={primitiveStyles.sectionTitleContainer}>
-      <Text style={[primitiveStyles.sectionTitleText, color ? { color } : {}]}>
+    <View style={[
+      primitiveStyles.sectionTitleContainer,
+      color ? { borderBottomColor: color } : {},
+    ]}>
+      <Text style={primitiveStyles.sectionTitleText}>
         {title}
       </Text>
-      <View
-        style={[
-          primitiveStyles.sectionUnderline,
-          color ? { borderBottomColor: color } : {},
-        ]}
-      />
     </View>
   )
 }
 
 /**
- * Legacy section title with colored accent bar.
+ * Date range with en-dash separator.
  */
-export function SectionTitleBar({
-  title,
-  color = '#4A5568',
-}: {
-  title: string
-  color?: string
-}) {
-  return (
-    <View>
-      <Text style={primitiveStyles.sectionTitleText}>{title}</Text>
-      <View
-        style={[primitiveStyles.sectionTitleBar, { backgroundColor: color }]}
-      />
-    </View>
-  )
-}
-
 export function DateRange({
   startDate,
   endDate,
@@ -156,6 +133,9 @@ export function DateRange({
   )
 }
 
+/**
+ * Bullet list for highlights.
+ */
 export function BulletList({ items }: { items: string[] }) {
   if (!items || items.length === 0) return null
   return (
@@ -164,7 +144,7 @@ export function BulletList({ items }: { items: string[] }) {
         .filter((item) => item.trim() !== '')
         .map((item, index) => (
           <View key={index} style={primitiveStyles.bulletItem}>
-            <Text style={primitiveStyles.bulletDot}>&#8226;</Text>
+            <Text style={primitiveStyles.bulletDot}>{'\u2022'}</Text>
             <Text style={primitiveStyles.bulletText}>{item}</Text>
           </View>
         ))}
@@ -173,7 +153,40 @@ export function BulletList({ items }: { items: string[] }) {
 }
 
 /**
- * Classic contact line with pipe separators.
+ * Contact line with icon symbols and dot separators (FlowCV style).
+ * Uses Unicode: envelope, phone, pin, link.
+ */
+export function ContactLineModern({ basics }: { basics: ContactInfo }) {
+  const items: { icon: string; text: string }[] = []
+  if (basics.email) items.push({ icon: '\u2709', text: basics.email })
+  if (basics.phone) items.push({ icon: '\u260E', text: basics.phone })
+  if (basics.location?.city) {
+    const loc = [basics.location.city, basics.location.region]
+      .filter(Boolean)
+      .join(', ')
+    if (loc) items.push({ icon: '\u25CB', text: loc })
+  }
+  if (basics.url) items.push({ icon: '\u2197', text: basics.url })
+
+  if (items.length === 0) return null
+
+  return (
+    <View style={primitiveStyles.contactRow}>
+      {items.map((item, index) => (
+        <View key={index} style={{ flexDirection: 'row', alignItems: 'center' }}>
+          {index > 0 && <Text style={primitiveStyles.contactSeparator}>{'\u2022'}</Text>}
+          <View style={primitiveStyles.contactItem}>
+            <Text style={primitiveStyles.contactIcon}>{item.icon}</Text>
+            <Text style={primitiveStyles.contactText}>{item.text}</Text>
+          </View>
+        </View>
+      ))}
+    </View>
+  )
+}
+
+/**
+ * Contact line with pipe separators (for minimal/centered templates).
  */
 export function ContactLine({ basics }: { basics: ContactInfo }) {
   const parts: string[] = []
@@ -190,44 +203,14 @@ export function ContactLine({ basics }: { basics: ContactInfo }) {
   if (parts.length === 0) return null
 
   return (
-    <View style={primitiveStyles.contactLine}>
+    <View style={primitiveStyles.contactLinePipe}>
       {parts.map((part, index) => (
         <Text key={index}>
           {index > 0 && (
-            <Text style={primitiveStyles.contactSeparator}> | </Text>
+            <Text style={primitiveStyles.contactPipeSep}> | </Text>
           )}
           {part}
         </Text>
-      ))}
-    </View>
-  )
-}
-
-/**
- * Modern contact line with icon-like labels and dot separators (matches reference).
- */
-export function ContactLineModern({ basics }: { basics: ContactInfo }) {
-  const items: { icon: string; text: string }[] = []
-  if (basics.email) items.push({ icon: '\u2709', text: basics.email })
-  if (basics.phone) items.push({ icon: '\u260E', text: basics.phone })
-  if (basics.location?.city) {
-    const loc = [basics.location.city, basics.location.region]
-      .filter(Boolean)
-      .join(' ')
-    if (loc) items.push({ icon: '\u25CB', text: loc })
-  }
-  if (basics.url) items.push({ icon: '\u2197', text: basics.url })
-
-  if (items.length === 0) return null
-
-  return (
-    <View style={primitiveStyles.contactRowModern}>
-      {items.map((item, index) => (
-        <View key={index} style={{ flexDirection: 'row', alignItems: 'center' }}>
-          {index > 0 && <Text style={primitiveStyles.contactDot}>{' \u2022 '}</Text>}
-          <Text style={primitiveStyles.contactIcon}>{item.icon} </Text>
-          <Text style={primitiveStyles.contactText}>{item.text}</Text>
-        </View>
       ))}
     </View>
   )

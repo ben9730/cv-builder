@@ -1,53 +1,42 @@
 import { Document, Page, View, Text, StyleSheet } from '@react-pdf/renderer'
 import { FONT_FAMILY } from './fonts'
-import { DateRange, BulletList } from './shared/pdf-primitives'
+import { DateRange, BulletList, ContactLine } from './shared/pdf-primitives'
 import type { ResumeData } from '@/types/resume'
 
 const styles = StyleSheet.create({
   page: {
-    padding: 44,
+    padding: 40,
     fontFamily: FONT_FAMILY,
     fontSize: 9,
-    color: '#1A202C',
-    lineHeight: 1.35,
+    color: '#1F2937',
+    lineHeight: 1.4,
   },
+  // Centered header
   header: {
-    marginBottom: 10,
+    marginBottom: 6,
     alignItems: 'center',
   },
   name: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 700,
     fontFamily: FONT_FAMILY,
-    color: '#1A202C',
+    color: '#111827',
     letterSpacing: 2,
     textTransform: 'uppercase',
-    marginBottom: 4,
+    marginBottom: 3,
   },
   label: {
     fontSize: 10,
     fontFamily: FONT_FAMILY,
-    color: '#4A5568',
+    color: '#6B7280',
     marginBottom: 6,
-  },
-  contactLine: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
-    gap: 4,
-    fontSize: 8,
-    fontFamily: FONT_FAMILY,
-    color: '#718096',
-  },
-  contactSep: {
-    color: '#CBD5E0',
   },
   // Hairline separator
   separator: {
     borderBottomWidth: 0.5,
-    borderBottomColor: '#E2E8F0',
+    borderBottomColor: '#E5E7EB',
     borderBottomStyle: 'solid',
-    marginTop: 12,
+    marginTop: 14,
     marginBottom: 4,
   },
   // Small caps section headers
@@ -55,21 +44,23 @@ const styles = StyleSheet.create({
     fontSize: 8,
     fontWeight: 700,
     fontFamily: FONT_FAMILY,
-    color: '#1A202C',
+    color: '#111827',
     textTransform: 'uppercase',
-    letterSpacing: 2,
+    letterSpacing: 2.5,
     marginBottom: 6,
     marginTop: 4,
   },
+  // Body text
   summary: {
     fontSize: 9,
-    color: '#2D3748',
+    color: '#374151',
     fontFamily: FONT_FAMILY,
-    lineHeight: 1.5,
+    lineHeight: 1.6,
     marginBottom: 2,
   },
+  // Entries
   entryContainer: {
-    marginBottom: 6,
+    marginBottom: 7,
   },
   entryHeader: {
     flexDirection: 'row',
@@ -78,76 +69,70 @@ const styles = StyleSheet.create({
     marginBottom: 1,
   },
   entryTitle: {
-    fontSize: 9,
+    fontSize: 9.5,
     fontWeight: 700,
     fontFamily: FONT_FAMILY,
-    color: '#1A202C',
+    color: '#111827',
   },
   entrySubtitle: {
-    fontSize: 8,
-    color: '#4A5568',
+    fontSize: 8.5,
+    color: '#6B7280',
     fontFamily: FONT_FAMILY,
     marginBottom: 1,
   },
+  // Skills
   skillRow: {
     flexDirection: 'row',
     marginBottom: 3,
   },
   skillName: {
-    fontSize: 8,
+    fontSize: 8.5,
     fontWeight: 700,
     fontFamily: FONT_FAMILY,
-    color: '#1A202C',
+    color: '#111827',
     width: 80,
   },
   skillKeywords: {
-    fontSize: 8,
+    fontSize: 8.5,
     fontFamily: FONT_FAMILY,
-    color: '#4A5568',
+    color: '#4B5563',
     flex: 1,
   },
+  // Languages
   languageRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 2,
+    marginBottom: 3,
   },
   languageName: {
-    fontSize: 8,
+    fontSize: 8.5,
     fontFamily: FONT_FAMILY,
-    color: '#1A202C',
+    color: '#111827',
   },
   languageFluency: {
-    fontSize: 8,
+    fontSize: 8.5,
     fontFamily: FONT_FAMILY,
-    color: '#718096',
+    color: '#9CA3AF',
   },
+  // Certs
   certItem: {
     marginBottom: 3,
   },
   certName: {
-    fontSize: 8,
+    fontSize: 8.5,
     fontWeight: 700,
     fontFamily: FONT_FAMILY,
-    color: '#1A202C',
+    color: '#111827',
   },
   certDetail: {
     fontSize: 8,
     fontFamily: FONT_FAMILY,
-    color: '#4A5568',
+    color: '#6B7280',
   },
 })
 
 export function MinimalTemplate({ resume }: { resume: ResumeData }) {
   const { basics, work, education, skills, certificates, projects, languages, volunteer } = resume
-
-  const contactParts: string[] = []
-  if (basics.email) contactParts.push(basics.email)
-  if (basics.phone) contactParts.push(basics.phone)
-  if (basics.location?.city) {
-    const loc = [basics.location.city, basics.location.region].filter(Boolean).join(', ')
-    if (loc) contactParts.push(loc)
-  }
-  if (basics.url) contactParts.push(basics.url)
 
   return (
     <Document>
@@ -156,16 +141,7 @@ export function MinimalTemplate({ resume }: { resume: ResumeData }) {
         <View style={styles.header}>
           {basics.name ? <Text style={styles.name}>{basics.name}</Text> : null}
           {basics.label ? <Text style={styles.label}>{basics.label}</Text> : null}
-          {contactParts.length > 0 ? (
-            <View style={styles.contactLine}>
-              {contactParts.map((part, i) => (
-                <Text key={i}>
-                  {i > 0 ? <Text style={styles.contactSep}> | </Text> : null}
-                  {part}
-                </Text>
-              ))}
-            </View>
-          ) : null}
+          <ContactLine basics={basics} />
         </View>
 
         {/* Summary */}
@@ -181,11 +157,11 @@ export function MinimalTemplate({ resume }: { resume: ResumeData }) {
         {work && work.length > 0 ? (
           <View>
             <View style={styles.separator} />
-            <Text style={styles.sectionTitle}>Experience</Text>
+            <Text style={styles.sectionTitle}>Professional Experience</Text>
             {work.map((entry, index) => (
               <View key={index} style={styles.entryContainer}>
                 <View style={styles.entryHeader}>
-                  <View>
+                  <View style={{ maxWidth: '78%' }}>
                     <Text style={styles.entryTitle}>
                       {entry.position || entry.name}
                     </Text>
