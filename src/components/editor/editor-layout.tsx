@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button'
 import { ExportMenu } from '@/components/export/export-menu'
 import { ImportButton } from '@/components/import/import-button'
 import { cn } from '@/lib/utils'
-import { Eye, PenLine, FileText } from 'lucide-react'
+import { Eye, PenLine, FileText, Trash2 } from 'lucide-react'
 
 // Dynamic import for PreviewPanel — @react-pdf/renderer cannot run in SSR
 const PreviewPanel = dynamic(
@@ -42,6 +42,14 @@ export function EditorLayout() {
 
   // Mobile: toggle between edit and preview modes
   const [mobileView, setMobileView] = useState<'edit' | 'preview'>('edit')
+
+  const reset = useResumeStore((s) => s.reset)
+
+  const handleClear = () => {
+    if (window.confirm('Clear all resume data? This cannot be undone.')) {
+      reset()
+    }
+  }
 
   const handleAddOptionalSection = (section: string) => {
     enableSection(section as 'certificates' | 'projects' | 'languages' | 'volunteer')
@@ -76,6 +84,16 @@ export function EditorLayout() {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="cursor-pointer text-muted-foreground hover:text-destructive"
+            onClick={handleClear}
+            aria-label="Clear resume"
+          >
+            <Trash2 className="size-4 mr-1" />
+            Clear
+          </Button>
           <ImportButton />
           <ExportMenu />
         </div>
@@ -106,6 +124,15 @@ export function EditorLayout() {
               <span className="text-sm font-semibold tracking-tight">CV Builder</span>
             </div>
             <div className="flex items-center gap-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="cursor-pointer size-8 text-muted-foreground hover:text-destructive"
+                onClick={handleClear}
+                aria-label="Clear resume"
+              >
+                <Trash2 className="size-4" />
+              </Button>
               <ImportButton />
               <ExportMenu />
             </div>
