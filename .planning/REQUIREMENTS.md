@@ -18,11 +18,11 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [x] **EDIT-01**: User can fill in contact information (name, title, email, phone, location, website/LinkedIn)
 - [x] **EDIT-02**: User can write a professional summary in a text area
-- [ ] **EDIT-03**: User can add, edit, and remove work experience entries (employer, title, dates, bullet points)
-- [ ] **EDIT-04**: User can add, edit, and remove education entries (degree, institution, year, GPA)
-- [ ] **EDIT-05**: User can add, edit, and remove skills (freeform tags or structured list)
+- [x] **EDIT-03**: User can add, edit, and remove work experience entries (employer, title, dates, bullet points)
+- [x] **EDIT-04**: User can add, edit, and remove education entries (degree, institution, year, GPA)
+- [x] **EDIT-05**: User can add, edit, and remove skills (freeform tags or structured list)
 - [ ] **EDIT-06**: User can add optional sections: certifications, projects, languages, volunteer work
-- [ ] **EDIT-07**: User can add and remove multiple entries within each section
+- [x] **EDIT-07**: User can add and remove multiple entries within each section
 
 ### Templates
 
@@ -105,11 +105,11 @@ Deferred to future release. Tracked but not in current roadmap.
 | PERS-01 | Phase 1 | Complete |
 | EDIT-01 | Phase 2 | Complete |
 | EDIT-02 | Phase 2 | Complete |
-| EDIT-03 | Phase 2 | Pending |
-| EDIT-04 | Phase 2 | Pending |
-| EDIT-05 | Phase 2 | Pending |
+| EDIT-03 | Phase 2 | Complete |
+| EDIT-04 | Phase 2 | Complete |
+| EDIT-05 | Phase 2 | Complete |
 | EDIT-06 | Phase 2 | Pending |
-| EDIT-07 | Phase 2 | Pending |
+| EDIT-07 | Phase 2 | Complete |
 | UI-01 | Phase 2 | Pending |
 | UI-02 | Phase 2 | Pending |
 | TMPL-01 | Phase 3 | Pending |
