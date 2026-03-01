@@ -161,7 +161,7 @@ export function MinimalTemplate({ resume }: { resume: ResumeData }) {
             {work.map((entry, index) => (
               <View key={index} style={styles.entryContainer}>
                 <View style={styles.entryHeader}>
-                  <View style={{ maxWidth: '78%' }}>
+                  <View style={{ flex: 1, marginRight: 8 }}>
                     <Text style={styles.entryTitle}>
                       {entry.position || entry.name}
                     </Text>

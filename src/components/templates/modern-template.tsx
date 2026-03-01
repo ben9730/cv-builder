@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     fontWeight: 700,
     fontFamily: FONT_FAMILY,
     color: '#FFFFFF',
-    marginBottom: 3,
+    marginBottom: 2,
   },
   label: {
     fontSize: 10,
@@ -33,24 +33,25 @@ const styles = StyleSheet.create({
     color: '#BFDBFE',
     marginBottom: 8,
   },
+  // Header contact row
   headerContact: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'center',
-    gap: 3,
   },
   headerContactItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 3,
+    marginRight: 3,
   },
   headerContactIcon: {
     fontSize: 7,
     fontFamily: FONT_FAMILY,
     color: '#93C5FD',
+    marginRight: 3,
   },
   headerContactText: {
-    fontSize: 8.5,
+    fontSize: 8,
     fontFamily: FONT_FAMILY,
     color: '#E0E7FF',
   },
@@ -58,7 +59,7 @@ const styles = StyleSheet.create({
     fontSize: 4,
     fontFamily: FONT_FAMILY,
     color: '#93C5FD',
-    marginHorizontal: 4,
+    marginHorizontal: 5,
   },
   // Two-column body
   body: {
@@ -69,12 +70,12 @@ const styles = StyleSheet.create({
     width: '30%',
     backgroundColor: ACCENT_LIGHT,
     padding: 16,
-    paddingTop: 12,
+    paddingTop: 14,
   },
   main: {
     width: '70%',
     padding: 18,
-    paddingTop: 12,
+    paddingTop: 14,
   },
   // Section titles
   sectionTitle: {
@@ -111,6 +112,10 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     marginBottom: 2,
   },
+  entryTitleBlock: {
+    flex: 1,
+    marginRight: 8,
+  },
   entryTitle: {
     fontSize: 10,
     fontWeight: 700,
@@ -135,22 +140,38 @@ const styles = StyleSheet.create({
     lineHeight: 1.5,
     marginBottom: 4,
   },
-  // Sidebar styles
+  // Sidebar styles - Skills as bullet list (FlowCV style)
   skillCategory: {
-    marginBottom: 5,
+    marginBottom: 6,
   },
   skillName: {
     fontSize: 8.5,
     fontWeight: 700,
     fontFamily: FONT_FAMILY,
     color: '#111827',
-    marginBottom: 1,
+    marginBottom: 2,
   },
   skillKeywords: {
     fontSize: 8,
     fontFamily: FONT_FAMILY,
     color: '#4B5563',
-    lineHeight: 1.4,
+    lineHeight: 1.5,
+  },
+  skillBulletRow: {
+    flexDirection: 'row',
+    marginBottom: 1,
+  },
+  skillBulletDot: {
+    width: 10,
+    fontSize: 7,
+    fontFamily: FONT_FAMILY,
+    color: '#93C5FD',
+  },
+  skillBulletText: {
+    flex: 1,
+    fontSize: 8,
+    fontFamily: FONT_FAMILY,
+    color: '#4B5563',
   },
   languageRow: {
     flexDirection: 'row',
@@ -186,7 +207,7 @@ const styles = StyleSheet.create({
 export function ModernTemplate({ resume }: { resume: ResumeData }) {
   const { basics, work, education, skills, certificates, projects, languages, volunteer } = resume
 
-  // Build contact parts
+  // Build contact items - show network name for profiles, not full URLs
   const contactItems: { icon: string; text: string }[] = []
   if (basics.email) contactItems.push({ icon: '\u2709', text: basics.email })
   if (basics.phone) contactItems.push({ icon: '\u260E', text: basics.phone })
@@ -197,7 +218,9 @@ export function ModernTemplate({ resume }: { resume: ResumeData }) {
   if (basics.url) contactItems.push({ icon: '\u2197', text: basics.url })
   if (basics.profiles && basics.profiles.length > 0) {
     for (const profile of basics.profiles) {
-      if (profile.url) contactItems.push({ icon: '\u2197', text: profile.url })
+      if (profile.url || profile.network) {
+        contactItems.push({ icon: '\u2197', text: profile.url || profile.network })
+      }
     }
   }
 
@@ -233,7 +256,14 @@ export function ModernTemplate({ resume }: { resume: ResumeData }) {
                 {skills.map((skill, index) => (
                   <View key={index} style={styles.skillCategory}>
                     {skill.name ? <Text style={styles.skillName}>{skill.name}</Text> : null}
-                    <Text style={styles.skillKeywords}>{skill.keywords.join(', ')}</Text>
+                    {skill.keywords.length > 0 ? (
+                      skill.keywords.map((keyword, ki) => (
+                        <View key={ki} style={styles.skillBulletRow}>
+                          <Text style={styles.skillBulletDot}>{'\u2022'}</Text>
+                          <Text style={styles.skillBulletText}>{keyword}</Text>
+                        </View>
+                      ))
+                    ) : null}
                   </View>
                 ))}
               </View>
@@ -280,16 +310,13 @@ export function ModernTemplate({ resume }: { resume: ResumeData }) {
                 {work.map((entry, index) => (
                   <View key={index} style={styles.entryContainer}>
                     <View style={styles.entryHeader}>
-                      <View style={{ maxWidth: '72%' }}>
+                      <View style={styles.entryTitleBlock}>
                         <Text style={styles.entryTitle}>
                           {entry.position || entry.name}
+                          {entry.position && entry.name ? (
+                            <Text style={styles.entryCompany}>, {entry.name}</Text>
+                          ) : null}
                         </Text>
-                        {entry.position && entry.name ? (
-                          <Text style={styles.entryCompany}>
-                            {entry.name}
-                            {entry.location ? ` \u2013 ${entry.location}` : ''}
-                          </Text>
-                        ) : null}
                       </View>
                       <DateRange startDate={entry.startDate} endDate={entry.endDate} />
                     </View>
@@ -306,13 +333,13 @@ export function ModernTemplate({ resume }: { resume: ResumeData }) {
                 {education.map((entry, index) => (
                   <View key={index} style={styles.entryContainer}>
                     <View style={styles.entryHeader}>
-                      <View>
-                        <Text style={styles.entryTitle}>{entry.institution}</Text>
-                        {(entry.studyType || entry.area) ? (
-                          <Text style={styles.entrySubtitle}>
-                            {[entry.studyType, entry.area].filter(Boolean).join(' in ')}
-                          </Text>
-                        ) : null}
+                      <View style={styles.entryTitleBlock}>
+                        <Text style={styles.entryTitle}>
+                          {[entry.studyType, entry.area].filter(Boolean).join(' in ')}
+                          {entry.institution ? (
+                            <Text style={styles.entryCompany}>, {entry.institution}</Text>
+                          ) : null}
+                        </Text>
                       </View>
                       <DateRange startDate={entry.startDate} endDate={entry.endDate} />
                     </View>
@@ -328,7 +355,9 @@ export function ModernTemplate({ resume }: { resume: ResumeData }) {
                 {projects.map((project, index) => (
                   <View key={index} style={styles.entryContainer}>
                     <View style={styles.entryHeader}>
-                      <Text style={styles.entryTitle}>{project.name}</Text>
+                      <View style={styles.entryTitleBlock}>
+                        <Text style={styles.entryTitle}>{project.name}</Text>
+                      </View>
                       <DateRange startDate={project.startDate} endDate={project.endDate} />
                     </View>
                     {project.description ? <Text style={styles.summary}>{project.description}</Text> : null}
@@ -344,13 +373,13 @@ export function ModernTemplate({ resume }: { resume: ResumeData }) {
                 {volunteer.map((entry, index) => (
                   <View key={index} style={styles.entryContainer}>
                     <View style={styles.entryHeader}>
-                      <View>
+                      <View style={styles.entryTitleBlock}>
                         <Text style={styles.entryTitle}>
                           {entry.position || entry.organization}
+                          {entry.position && entry.organization ? (
+                            <Text style={styles.entryCompany}>, {entry.organization}</Text>
+                          ) : null}
                         </Text>
-                        {entry.position && entry.organization ? (
-                          <Text style={styles.entrySubtitle}>{entry.organization}</Text>
-                        ) : null}
                       </View>
                       <DateRange startDate={entry.startDate} endDate={entry.endDate} />
                     </View>

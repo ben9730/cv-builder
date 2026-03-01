@@ -53,7 +53,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'baseline',
     flexWrap: 'wrap',
-    maxWidth: '78%',
+    flex: 1,
+    marginRight: 8,
   },
   entryTitle: {
     fontSize: 10,

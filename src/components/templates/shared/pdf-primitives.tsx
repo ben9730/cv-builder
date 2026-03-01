@@ -24,6 +24,7 @@ const primitiveStyles = StyleSheet.create({
     color: '#718096',
     fontFamily: FONT_FAMILY,
     flexShrink: 0,
+    textAlign: 'right',
   },
   // Bullet list
   bulletItem: {
@@ -49,18 +50,18 @@ const primitiveStyles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'center',
-    gap: 4,
     marginTop: 2,
   },
   contactItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 3,
+    marginRight: 3,
   },
   contactIcon: {
     fontSize: 8,
     fontFamily: FONT_FAMILY,
     color: '#6B7280',
+    marginRight: 3,
   },
   contactText: {
     fontSize: 9,
@@ -71,14 +72,13 @@ const primitiveStyles = StyleSheet.create({
     fontSize: 4,
     fontFamily: FONT_FAMILY,
     color: '#D1D5DB',
-    marginHorizontal: 4,
+    marginHorizontal: 5,
   },
   // Pipe-separated contact (for minimal template)
   contactLinePipe: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
-    gap: 4,
     fontSize: 8.5,
     fontFamily: FONT_FAMILY,
     color: '#6B7280',
@@ -139,7 +139,7 @@ export function DateRange({
 export function BulletList({ items }: { items: string[] }) {
   if (!items || items.length === 0) return null
   return (
-    <View>
+    <View style={{ width: '100%' }}>
       {items
         .filter((item) => item.trim() !== '')
         .map((item, index) => (
@@ -153,10 +153,10 @@ export function BulletList({ items }: { items: string[] }) {
 }
 
 /**
- * Contact line with icon symbols and dot separators (FlowCV style).
- * Uses Unicode: envelope, phone, pin, link.
+ * Build contact items from basics data, including profiles.
+ * Shows network name for profiles instead of full URLs.
  */
-export function ContactLineModern({ basics }: { basics: ContactInfo }) {
+function buildContactItems(basics: ContactInfo): { icon: string; text: string }[] {
   const items: { icon: string; text: string }[] = []
   if (basics.email) items.push({ icon: '\u2709', text: basics.email })
   if (basics.phone) items.push({ icon: '\u260E', text: basics.phone })
@@ -167,7 +167,21 @@ export function ContactLineModern({ basics }: { basics: ContactInfo }) {
     if (loc) items.push({ icon: '\u25CB', text: loc })
   }
   if (basics.url) items.push({ icon: '\u2197', text: basics.url })
+  if (basics.profiles && basics.profiles.length > 0) {
+    for (const profile of basics.profiles) {
+      if (profile.url || profile.network) {
+        items.push({ icon: '\u2197', text: profile.url || profile.network })
+      }
+    }
+  }
+  return items
+}
 
+/**
+ * Contact line with icon symbols and dot separators (FlowCV style).
+ */
+export function ContactLineModern({ basics }: { basics: ContactInfo }) {
+  const items = buildContactItems(basics)
   if (items.length === 0) return null
 
   return (
@@ -199,6 +213,13 @@ export function ContactLine({ basics }: { basics: ContactInfo }) {
     if (loc) parts.push(loc)
   }
   if (basics.url) parts.push(basics.url)
+  if (basics.profiles && basics.profiles.length > 0) {
+    for (const profile of basics.profiles) {
+      if (profile.url || profile.network) {
+        parts.push(profile.url || profile.network)
+      }
+    }
+  }
 
   if (parts.length === 0) return null
 
