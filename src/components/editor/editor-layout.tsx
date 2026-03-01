@@ -11,6 +11,7 @@ import { TemplateSwitcher } from '@/components/preview/template-switcher'
 import { PageIndicator } from '@/components/preview/page-indicator'
 import { Button } from '@/components/ui/button'
 import { ExportMenu } from '@/components/export/export-menu'
+import { ImportButton } from '@/components/import/import-button'
 import { cn } from '@/lib/utils'
 import { Eye, PenLine } from 'lucide-react'
 
@@ -67,7 +68,10 @@ export function EditorLayout() {
       {/* Header bar */}
       <header className="hidden md:flex items-center justify-between px-6 py-3 border-b bg-background shrink-0">
         <h1 className="text-lg font-semibold">CV Builder</h1>
-        <ExportMenu />
+        <div className="flex items-center gap-2">
+          <ImportButton />
+          <ExportMenu />
+        </div>
       </header>
 
       <div className="flex flex-1 min-h-0">
@@ -89,7 +93,10 @@ export function EditorLayout() {
       <div className="md:hidden fixed top-0 left-0 right-0 z-10 bg-background border-b">
         <div className="flex items-center justify-between px-2 py-1 border-b">
           <span className="text-sm font-semibold">CV Builder</span>
-          <ExportMenu />
+          <div className="flex items-center gap-1">
+            <ImportButton />
+            <ExportMenu />
+          </div>
         </div>
         <div className="flex items-center justify-between px-2 pt-1 pb-1">
           <div className="overflow-x-auto flex gap-1 flex-1">
