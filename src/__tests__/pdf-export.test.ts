@@ -43,7 +43,7 @@ describe('PDF Export', () => {
   it('calls saveAs with blob and correct filename', async () => {
     await exportPdf(mockResume, 'classic')
     expect(saveAs).toHaveBeenCalledTimes(1)
-    const [blob, filename] = (saveAs as ReturnType<typeof vi.fn>).mock.calls[0]
+    const [blob, filename] = (saveAs as unknown as ReturnType<typeof vi.fn>).mock.calls[0]
     expect(blob).toBeInstanceOf(Blob)
     expect(filename).toBe('Jane Smith.pdf')
   })

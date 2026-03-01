@@ -1,5 +1,7 @@
 import type { ResumeData } from '@/types/resume'
 import { ClassicTemplate } from './classic-template'
+import { ModernTemplate } from './modern-template'
+import { MinimalTemplate } from './minimal-template'
 
 export type TemplateId = 'classic' | 'modern' | 'minimal'
 
@@ -23,14 +25,14 @@ export const TEMPLATES: Record<TemplateId, TemplateDefinition> = {
     id: 'modern',
     name: 'Modern',
     description: 'Bold two-column layout',
-    component: ClassicTemplate, // Placeholder until Plan 02
+    component: ModernTemplate,
     accentColor: '#2B6CB0',
   },
   minimal: {
     id: 'minimal',
     name: 'Minimal',
     description: 'Elegant typography',
-    component: ClassicTemplate, // Placeholder until Plan 02
+    component: MinimalTemplate,
     accentColor: '#1A202C',
   },
 }

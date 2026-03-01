@@ -11,7 +11,8 @@ export async function exportPdf(
 ): Promise<void> {
   const TemplateComponent = TEMPLATES[templateId].component
   const element = React.createElement(TemplateComponent, { resume })
-  const blob = await pdf(element).toBlob()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const blob = await pdf(element as any).toBlob()
   const filename = `${resume.basics.name || 'resume'}.pdf`
   saveAs(blob, filename)
 }
