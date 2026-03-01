@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import { useForm, useFieldArray, Controller } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Plus } from 'lucide-react'
 import { toast } from 'sonner'
@@ -28,7 +27,6 @@ export function EducationForm() {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null)
 
   const form = useForm<EducationFormValues>({
-    resolver: zodResolver(EducationFormSchema),
     defaultValues: { education: resume.education },
     mode: 'onBlur',
   })

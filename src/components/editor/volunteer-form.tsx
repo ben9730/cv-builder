@@ -5,7 +5,7 @@ import { useForm, useFieldArray, Controller } from 'react-hook-form'
 import { z } from 'zod'
 import { Plus, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
-import { WorkEntrySchema } from '@/lib/schema/resume-schema'
+import { VolunteerEntrySchema } from '@/lib/schema/resume-schema'
 import { useResumeStore } from '@/lib/store/resume-store'
 import { useHydration } from '@/hooks/use-hydration'
 import { Input } from '@/components/ui/input'
@@ -13,156 +13,139 @@ import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { EntryCard } from '@/components/editor/entry-card'
-import type { WorkEntry } from '@/types/resume'
 
-const ExperienceFormSchema = z.object({
-  work: z.array(WorkEntrySchema),
+const VolunteerFormSchema = z.object({
+  volunteer: z.array(VolunteerEntrySchema),
 })
 
-type ExperienceFormValues = z.infer<typeof ExperienceFormSchema>
+type VolunteerFormValues = z.infer<typeof VolunteerFormSchema>
 
-export function ExperienceForm() {
+export function VolunteerForm() {
   const hydrated = useHydration()
   const resume = useResumeStore((s) => s.resume)
-  const updateWork = useResumeStore((s) => s.updateWork)
+  const updateSection = useResumeStore((s) => s.updateSection)
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null)
 
-  const form = useForm<ExperienceFormValues>({
-    defaultValues: { work: resume.work },
+  const form = useForm<VolunteerFormValues>({
+    defaultValues: { volunteer: resume.volunteer ?? [] },
     mode: 'onBlur',
   })
 
   const { fields, append, remove, insert } = useFieldArray({
     control: form.control,
-    name: 'work',
+    name: 'volunteer',
   })
 
   useEffect(() => {
     const subscription = form.watch((value) => {
-      if (value.work) {
-        updateWork(value.work as WorkEntry[])
-      }
+      if (value.volunteer) updateSection('volunteer', value.volunteer as any[])
     })
     return () => subscription.unsubscribe()
-  }, [form, updateWork])
+  }, [form, updateSection])
 
-  const handleAddEntry = () => {
-    append(WorkEntrySchema.parse({}))
+  const handleAdd = () => {
+    append(VolunteerEntrySchema.parse({}))
     setExpandedIndex(fields.length)
   }
 
-  const handleRemoveEntry = (index: number) => {
-    const removed = form.getValues(`work.${index}`)
+  const handleRemove = (index: number) => {
+    const removed = form.getValues(`volunteer.${index}`)
     remove(index)
     if (expandedIndex === index) setExpandedIndex(null)
-    else if (expandedIndex !== null && expandedIndex > index) {
-      setExpandedIndex(expandedIndex - 1)
-    }
-    toast('Experience removed', {
-      action: {
-        label: 'Undo',
-        onClick: () => insert(index, removed),
-      },
+    else if (expandedIndex !== null && expandedIndex > index) setExpandedIndex(expandedIndex - 1)
+    toast('Volunteer entry removed', {
+      action: { label: 'Undo', onClick: () => insert(index, removed) },
       duration: 5000,
     })
   }
 
   const addHighlight = (entryIndex: number) => {
-    const current = form.getValues(`work.${entryIndex}.highlights`) || []
-    form.setValue(`work.${entryIndex}.highlights`, [...current, ''])
+    const current = form.getValues(`volunteer.${entryIndex}.highlights`) || []
+    form.setValue(`volunteer.${entryIndex}.highlights`, [...current, ''])
   }
 
   const removeHighlight = (entryIndex: number, bulletIndex: number) => {
-    const current = form.getValues(`work.${entryIndex}.highlights`) || []
+    const current = form.getValues(`volunteer.${entryIndex}.highlights`) || []
     form.setValue(
-      `work.${entryIndex}.highlights`,
+      `volunteer.${entryIndex}.highlights`,
       current.filter((_, i) => i !== bulletIndex)
     )
   }
 
-  if (!hydrated) {
-    return <div className="space-y-4 animate-pulse"><div className="h-20 bg-muted rounded" /></div>
-  }
+  if (!hydrated) return <div className="animate-pulse h-20 bg-muted rounded" />
 
   return (
     <div className="space-y-4">
-      <h2 className="text-lg font-semibold">Work Experience</h2>
-
+      <h2 className="text-lg font-semibold">Volunteer Experience</h2>
       {fields.length === 0 && (
-        <p className="text-sm text-muted-foreground py-4">
-          No work experience entries yet. Add your first position below.
-        </p>
+        <p className="text-sm text-muted-foreground py-4">No volunteer experience yet.</p>
       )}
-
       <div className="space-y-3">
         {fields.map((field, index) => {
-          const values = form.watch(`work.${index}`)
-          const summary = values?.position && values?.name
-            ? `${values.position} at ${values.name}`
-            : values?.position || values?.name || ''
-
+          const values = form.watch(`volunteer.${index}`)
+          const summary = values?.position && values?.organization
+            ? `${values.position} at ${values.organization}`
+            : values?.position || values?.organization || ''
           return (
             <EntryCard
               key={field.id}
               expanded={expandedIndex === index}
               onToggle={() => setExpandedIndex(expandedIndex === index ? null : index)}
-              onRemove={() => handleRemoveEntry(index)}
+              onRemove={() => handleRemove(index)}
               summary={summary}
             >
               <div className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <Controller
-                    name={`work.${index}.name`}
+                    name={`volunteer.${index}.organization`}
                     control={form.control}
                     render={({ field }) => (
                       <div className="space-y-2">
-                        <Label htmlFor={`work-${index}-name`}>Employer</Label>
-                        <Input {...field} id={`work-${index}-name`} placeholder="Company name" />
+                        <Label htmlFor={`vol-${index}-org`}>Organization</Label>
+                        <Input {...field} id={`vol-${index}-org`} placeholder="Red Cross" />
                       </div>
                     )}
                   />
                   <Controller
-                    name={`work.${index}.position`}
+                    name={`volunteer.${index}.position`}
                     control={form.control}
                     render={({ field }) => (
                       <div className="space-y-2">
-                        <Label htmlFor={`work-${index}-position`}>Job Title</Label>
-                        <Input {...field} id={`work-${index}-position`} placeholder="Software Engineer" />
+                        <Label htmlFor={`vol-${index}-pos`}>Position</Label>
+                        <Input {...field} id={`vol-${index}-pos`} value={field.value ?? ''} placeholder="Volunteer Coordinator" />
                       </div>
                     )}
                   />
                 </div>
-
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <Controller
-                    name={`work.${index}.startDate`}
+                    name={`volunteer.${index}.startDate`}
                     control={form.control}
                     render={({ field }) => (
                       <div className="space-y-2">
-                        <Label htmlFor={`work-${index}-start`}>Start Date</Label>
-                        <Input {...field} id={`work-${index}-start`} value={field.value ?? ''} placeholder="2020-01" />
+                        <Label htmlFor={`vol-${index}-start`}>Start Date</Label>
+                        <Input {...field} id={`vol-${index}-start`} value={field.value ?? ''} placeholder="2022-06" />
                       </div>
                     )}
                   />
                   <Controller
-                    name={`work.${index}.endDate`}
+                    name={`volunteer.${index}.endDate`}
                     control={form.control}
                     render={({ field }) => (
                       <div className="space-y-2">
-                        <Label htmlFor={`work-${index}-end`}>End Date</Label>
-                        <Input {...field} id={`work-${index}-end`} value={field.value ?? ''} placeholder="Present" />
+                        <Label htmlFor={`vol-${index}-end`}>End Date</Label>
+                        <Input {...field} id={`vol-${index}-end`} value={field.value ?? ''} placeholder="Present" />
                       </div>
                     )}
                   />
                 </div>
-
                 <Controller
-                  name={`work.${index}.location`}
+                  name={`volunteer.${index}.url`}
                   control={form.control}
                   render={({ field }) => (
                     <div className="space-y-2">
-                      <Label htmlFor={`work-${index}-location`}>Location</Label>
-                      <Input {...field} id={`work-${index}-location`} value={field.value ?? ''} placeholder="San Francisco, CA" />
+                      <Label htmlFor={`vol-${index}-url`}>URL</Label>
+                      <Input {...field} id={`vol-${index}-url`} value={field.value ?? ''} placeholder="https://..." />
                     </div>
                   )}
                 />
@@ -174,10 +157,10 @@ export function ExperienceForm() {
                   {(values?.highlights || []).map((_, bulletIndex) => (
                     <div key={bulletIndex} className="flex gap-2">
                       <Controller
-                        name={`work.${index}.highlights.${bulletIndex}`}
+                        name={`volunteer.${index}.highlights.${bulletIndex}`}
                         control={form.control}
                         render={({ field }) => (
-                          <Input {...field} placeholder="Describe an achievement or responsibility..." className="flex-1" />
+                          <Input {...field} placeholder="Describe an achievement or contribution..." className="flex-1" />
                         )}
                       />
                       <Button
@@ -190,12 +173,7 @@ export function ExperienceForm() {
                       </Button>
                     </div>
                   ))}
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => addHighlight(index)}
-                    className="mt-1"
-                  >
+                  <Button variant="outline" size="sm" onClick={() => addHighlight(index)} className="mt-1">
                     <Plus className="size-4 mr-1" />
                     Add bullet
                   </Button>
@@ -205,10 +183,9 @@ export function ExperienceForm() {
           )
         })}
       </div>
-
-      <Button variant="outline" onClick={handleAddEntry}>
+      <Button variant="outline" onClick={handleAdd}>
         <Plus className="size-4 mr-2" />
-        Add Experience
+        Add Volunteer Entry
       </Button>
     </div>
   )

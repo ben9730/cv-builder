@@ -2,7 +2,6 @@
 
 import { useEffect } from 'react'
 import { useForm, useFieldArray, Controller } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Plus, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
@@ -29,7 +28,6 @@ export function SkillsForm() {
   const updateSkills = useResumeStore((s) => s.updateSkills)
 
   const form = useForm<SkillsFormValues>({
-    resolver: zodResolver(SkillsFormSchema),
     defaultValues: { skills: resume.skills },
     mode: 'onBlur',
   })

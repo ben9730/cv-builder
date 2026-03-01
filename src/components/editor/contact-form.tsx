@@ -2,8 +2,6 @@
 
 import { useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { ContactSchema } from '@/lib/schema/resume-schema'
 import { useResumeStore } from '@/lib/store/resume-store'
 import { useHydration } from '@/hooks/use-hydration'
 import { Input } from '@/components/ui/input'
@@ -17,7 +15,6 @@ export function ContactForm() {
   const updateBasics = useResumeStore((s) => s.updateBasics)
 
   const form = useForm<ContactInfo>({
-    resolver: zodResolver(ContactSchema),
     defaultValues: resume.basics,
     mode: 'onBlur',
   })
