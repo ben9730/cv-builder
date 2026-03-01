@@ -1,0 +1,44 @@
+[   89163ms] [ERROR] Error: Could not resolve font for Inter, fontWeight 400, fontStyle italic
+    at FontFamily.resolve (http://localhost:3000/_next/static/chunks/node_modules_b5e83486._.js:11177:19)
+    at FontStore.getFont (http://localhost:3000/_next/static/chunks/node_modules_b5e83486._.js:11358:46)
+    at FontStore.load (http://localhost:3000/_next/static/chunks/node_modules_b5e83486._.js:11361:27)
+    at http://localhost:3000/_next/static/chunks/node_modules_%40react-pdf_layout_lib_index_035642ed.js:723:71
+    at Array.map (<anonymous>)
+    at fetchAssets (http://localhost:3000/_next/static/chunks/node_modules_%40react-pdf_layout_lib_index_035642ed.js:723:43)
+    at resolveAssets (http://localhost:3000/_next/static/chunks/node_modules_%40react-pdf_layout_lib_index_035642ed.js:751:22)
+    at http://localhost:3000/_next/static/chunks/node_modules_b5e83486._.js:11452:28
+    at async render (http://localhost:3000/_next/static/chunks/node_modules_b5e83486._.js:22726:24)
+    at async Object.toBlob (http://localhost:3000/_next/static/chunks/node_modules_b5e83486._.js:22743:76) @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[   89289ms] [ERROR] Error: Could not resolve font for Inter, fontWeight 400, fontStyle italic
+    at FontFamily.resolve (http://localhost:3000/_next/static/chunks/node_modules_b5e83486._.js:11177:19)
+    at FontStore.getFont (http://localhost:3000/_next/static/chunks/node_modules_b5e83486._.js:11358:46)
+    at FontStore.load (http://localhost:3000/_next/static/chunks/node_modules_b5e83486._.js:11361:27)
+    at http://localhost:3000/_next/static/chunks/node_modules_%40react-pdf_layout_lib_index_035642ed.js:723:71
+    at Array.map (<anonymous>)
+    at fetchAssets (http://localhost:3000/_next/static/chunks/node_modules_%40react-pdf_layout_lib_index_035642ed.js:723:43)
+    at resolveAssets (http://localhost:3000/_next/static/chunks/node_modules_%40react-pdf_layout_lib_index_035642ed.js:751:22)
+    at http://localhost:3000/_next/static/chunks/node_modules_b5e83486._.js:11452:28
+    at async render (http://localhost:3000/_next/static/chunks/node_modules_b5e83486._.js:22726:24)
+    at async Object.toBlob (http://localhost:3000/_next/static/chunks/node_modules_b5e83486._.js:22743:76) @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[   89341ms] [ERROR] Error: Could not resolve font for Inter, fontWeight 400, fontStyle italic
+    at FontFamily.resolve (http://localhost:3000/_next/static/chunks/node_modules_b5e83486._.js:11177:19)
+    at FontStore.getFont (http://localhost:3000/_next/static/chunks/node_modules_b5e83486._.js:11358:46)
+    at FontStore.load (http://localhost:3000/_next/static/chunks/node_modules_b5e83486._.js:11361:27)
+    at http://localhost:3000/_next/static/chunks/node_modules_%40react-pdf_layout_lib_index_035642ed.js:723:71
+    at Array.map (<anonymous>)
+    at fetchAssets (http://localhost:3000/_next/static/chunks/node_modules_%40react-pdf_layout_lib_index_035642ed.js:723:43)
+    at resolveAssets (http://localhost:3000/_next/static/chunks/node_modules_%40react-pdf_layout_lib_index_035642ed.js:751:22)
+    at http://localhost:3000/_next/static/chunks/node_modules_b5e83486._.js:11452:28
+    at async render (http://localhost:3000/_next/static/chunks/node_modules_b5e83486._.js:22726:24)
+    at async Object.toBlob (http://localhost:3000/_next/static/chunks/node_modules_b5e83486._.js:22743:76) @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  104160ms] [ERROR] Error: Could not resolve font for Inter, fontWeight 400, fontStyle italic
+    at FontFamily.resolve (http://localhost:3000/_next/static/chunks/node_modules_b5e83486._.js:11177:19)
+    at FontStore.getFont (http://localhost:3000/_next/static/chunks/node_modules_b5e83486._.js:11358:46)
+    at FontStore.load (http://localhost:3000/_next/static/chunks/node_modules_b5e83486._.js:11361:27)
+    at http://localhost:3000/_next/static/chunks/node_modules_%40react-pdf_layout_lib_index_035642ed.js:723:71
+    at Array.map (<anonymous>)
+    at fetchAssets (http://localhost:3000/_next/static/chunks/node_modules_%40react-pdf_layout_lib_index_035642ed.js:723:43)
+    at resolveAssets (http://localhost:3000/_next/static/chunks/node_modules_%40react-pdf_layout_lib_index_035642ed.js:751:22)
+    at http://localhost:3000/_next/static/chunks/node_modules_b5e83486._.js:11452:28
+    at async render (http://localhost:3000/_next/static/chunks/node_modules_b5e83486._.js:22726:24)
+    at async Object.toBlob (http://localhost:3000/_next/static/chunks/node_modules_b5e83486._.js:22743:76) @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
