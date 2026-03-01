@@ -26,14 +26,14 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Templates
 
-- [ ] **TMPL-01**: 3 professional, ATS-safe resume templates with distinct visual styles
-- [ ] **TMPL-02**: Templates render resume data without internal state (pure renderers)
-- [ ] **TMPL-03**: User can switch between templates without losing entered data
+- [x] **TMPL-01**: 3 professional, ATS-safe resume templates with distinct visual styles
+- [x] **TMPL-02**: Templates render resume data without internal state (pure renderers)
+- [x] **TMPL-03**: User can switch between templates without losing entered data
 
 ### Preview
 
-- [ ] **PREV-01**: Live preview updates in real-time as user edits form fields
-- [ ] **PREV-02**: Preview accurately represents the final exported PDF layout
+- [x] **PREV-01**: Live preview updates in real-time as user edits form fields
+- [x] **PREV-02**: Preview accurately represents the final exported PDF layout
 
 ### Import
 
@@ -43,13 +43,13 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Export
 
-- [ ] **EXPT-01**: User can export resume as a PDF with selectable text (ATS-friendly)
-- [ ] **EXPT-02**: User can export resume as a DOCX file matching the resume structure
+- [x] **EXPT-01**: User can export resume as a PDF with selectable text (ATS-friendly)
+- [x] **EXPT-02**: User can export resume as a DOCX file matching the resume structure
 
 ### Persistence
 
 - [x] **PERS-01**: Anonymous user data saved to localStorage automatically
-- [ ] **PERS-02**: User can export resume data as JSON file (backup for localStorage volatility)
+- [x] **PERS-02**: User can export resume data as JSON file (backup for localStorage volatility)
 
 ### UI
 
@@ -112,14 +112,14 @@ Deferred to future release. Tracked but not in current roadmap.
 | EDIT-07 | Phase 2 | Complete |
 | UI-01 | Phase 2 | Complete |
 | UI-02 | Phase 2 | Complete |
-| TMPL-01 | Phase 3 | Pending |
-| TMPL-02 | Phase 3 | Pending |
-| TMPL-03 | Phase 3 | Pending |
-| PREV-01 | Phase 3 | Pending |
-| PREV-02 | Phase 3 | Pending |
-| EXPT-01 | Phase 3 | Pending |
-| EXPT-02 | Phase 3 | Pending |
-| PERS-02 | Phase 3 | Pending |
+| TMPL-01 | Phase 3 | Complete |
+| TMPL-02 | Phase 3 | Complete |
+| TMPL-03 | Phase 3 | Complete |
+| PREV-01 | Phase 3 | Complete |
+| PREV-02 | Phase 3 | Complete |
+| EXPT-01 | Phase 3 | Complete |
+| EXPT-02 | Phase 3 | Complete |
+| PERS-02 | Phase 3 | Complete |
 | IMPT-01 | Phase 4 | Pending |
 | IMPT-02 | Phase 4 | Pending |
 | IMPT-03 | Phase 4 | Pending |
