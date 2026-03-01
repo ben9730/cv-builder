@@ -98,37 +98,37 @@ Deferred to future release. Tracked but not in current roadmap.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FOUN-01 | — | Pending |
-| FOUN-02 | — | Pending |
-| FOUN-03 | — | Pending |
-| FOUN-04 | — | Pending |
-| EDIT-01 | — | Pending |
-| EDIT-02 | — | Pending |
-| EDIT-03 | — | Pending |
-| EDIT-04 | — | Pending |
-| EDIT-05 | — | Pending |
-| EDIT-06 | — | Pending |
-| EDIT-07 | — | Pending |
-| TMPL-01 | — | Pending |
-| TMPL-02 | — | Pending |
-| TMPL-03 | — | Pending |
-| PREV-01 | — | Pending |
-| PREV-02 | — | Pending |
-| IMPT-01 | — | Pending |
-| IMPT-02 | — | Pending |
-| IMPT-03 | — | Pending |
-| EXPT-01 | — | Pending |
-| EXPT-02 | — | Pending |
-| PERS-01 | — | Pending |
-| PERS-02 | — | Pending |
-| UI-01 | — | Pending |
-| UI-02 | — | Pending |
+| FOUN-01 | Phase 1 | Pending |
+| FOUN-02 | Phase 1 | Pending |
+| FOUN-03 | Phase 1 | Pending |
+| FOUN-04 | Phase 1 | Pending |
+| PERS-01 | Phase 1 | Pending |
+| EDIT-01 | Phase 2 | Pending |
+| EDIT-02 | Phase 2 | Pending |
+| EDIT-03 | Phase 2 | Pending |
+| EDIT-04 | Phase 2 | Pending |
+| EDIT-05 | Phase 2 | Pending |
+| EDIT-06 | Phase 2 | Pending |
+| EDIT-07 | Phase 2 | Pending |
+| UI-01 | Phase 2 | Pending |
+| UI-02 | Phase 2 | Pending |
+| TMPL-01 | Phase 3 | Pending |
+| TMPL-02 | Phase 3 | Pending |
+| TMPL-03 | Phase 3 | Pending |
+| PREV-01 | Phase 3 | Pending |
+| PREV-02 | Phase 3 | Pending |
+| EXPT-01 | Phase 3 | Pending |
+| EXPT-02 | Phase 3 | Pending |
+| PERS-02 | Phase 3 | Pending |
+| IMPT-01 | Phase 4 | Pending |
+| IMPT-02 | Phase 4 | Pending |
+| IMPT-03 | Phase 4 | Pending |
 
 **Coverage:**
 - v1 requirements: 25 total
-- Mapped to phases: 0
-- Unmapped: 25 ⚠️
+- Mapped to phases: 25
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-01*
-*Last updated: 2026-03-01 after initial definition*
+*Last updated: 2026-03-01 after roadmap creation — all 25 requirements mapped*
