@@ -16,8 +16,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Editor
 
-- [ ] **EDIT-01**: User can fill in contact information (name, title, email, phone, location, website/LinkedIn)
-- [ ] **EDIT-02**: User can write a professional summary in a text area
+- [x] **EDIT-01**: User can fill in contact information (name, title, email, phone, location, website/LinkedIn)
+- [x] **EDIT-02**: User can write a professional summary in a text area
 - [ ] **EDIT-03**: User can add, edit, and remove work experience entries (employer, title, dates, bullet points)
 - [ ] **EDIT-04**: User can add, edit, and remove education entries (degree, institution, year, GPA)
 - [ ] **EDIT-05**: User can add, edit, and remove skills (freeform tags or structured list)
@@ -103,8 +103,8 @@ Deferred to future release. Tracked but not in current roadmap.
 | FOUN-03 | Phase 1 | Complete |
 | FOUN-04 | Phase 1 | Complete |
 | PERS-01 | Phase 1 | Complete |
-| EDIT-01 | Phase 2 | Pending |
-| EDIT-02 | Phase 2 | Pending |
+| EDIT-01 | Phase 2 | Complete |
+| EDIT-02 | Phase 2 | Complete |
 | EDIT-03 | Phase 2 | Pending |
 | EDIT-04 | Phase 2 | Pending |
 | EDIT-05 | Phase 2 | Pending |
