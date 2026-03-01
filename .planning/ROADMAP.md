@@ -89,7 +89,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/2 | Not started | - |
-| 2. Editor | 0/3 | Not started | - |
+| 1. Foundation | 2/2 | Complete | 2026-03-01 |
+| 2. Editor | 3/3 | Complete | 2026-03-01 |
 | 3. Templates, Preview and Export | 0/3 | Not started | - |
 | 4. Import | 0/2 | Not started | - |

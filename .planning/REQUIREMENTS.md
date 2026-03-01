@@ -21,7 +21,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **EDIT-03**: User can add, edit, and remove work experience entries (employer, title, dates, bullet points)
 - [x] **EDIT-04**: User can add, edit, and remove education entries (degree, institution, year, GPA)
 - [x] **EDIT-05**: User can add, edit, and remove skills (freeform tags or structured list)
-- [ ] **EDIT-06**: User can add optional sections: certifications, projects, languages, volunteer work
+- [x] **EDIT-06**: User can add optional sections: certifications, projects, languages, volunteer work
 - [x] **EDIT-07**: User can add and remove multiple entries within each section
 
 ### Templates
@@ -53,8 +53,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### UI
 
-- [ ] **UI-01**: Responsive web interface usable on desktop and mobile
-- [ ] **UI-02**: Clean, intuitive form layout with clear section navigation
+- [x] **UI-01**: Responsive web interface usable on desktop and mobile
+- [x] **UI-02**: Clean, intuitive form layout with clear section navigation
 
 ## v2 Requirements
 
@@ -108,10 +108,10 @@ Deferred to future release. Tracked but not in current roadmap.
 | EDIT-03 | Phase 2 | Complete |
 | EDIT-04 | Phase 2 | Complete |
 | EDIT-05 | Phase 2 | Complete |
-| EDIT-06 | Phase 2 | Pending |
+| EDIT-06 | Phase 2 | Complete |
 | EDIT-07 | Phase 2 | Complete |
-| UI-01 | Phase 2 | Pending |
-| UI-02 | Phase 2 | Pending |
+| UI-01 | Phase 2 | Complete |
+| UI-02 | Phase 2 | Complete |
 | TMPL-01 | Phase 3 | Pending |
 | TMPL-02 | Phase 3 | Pending |
 | TMPL-03 | Phase 3 | Pending |

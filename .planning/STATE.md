@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: unknown
-last_updated: "2026-03-01T12:24:57.955Z"
+status: in_progress
+last_updated: "2026-03-01T15:48:00.000Z"
 progress:
-  total_phases: 1
-  completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
+  total_phases: 4
+  completed_phases: 2
+  total_plans: 5
+  completed_plans: 5
 ---
 
 # Project State
@@ -18,33 +18,34 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-01)
 
 **Core value:** Users can quickly produce a polished, professional resume — whether starting fresh or importing an existing document — and export it in the format they need.
-**Current focus:** Phase 1 — Foundation
+**Current focus:** Phase 2 complete — Ready for Phase 3
 
 ## Current Position
 
-Phase: 1 of 4 (Foundation)
-Plan: 2 of 2 in current phase
-Status: Phase 1 complete
-Last activity: 2026-03-01 — Completed Plan 01-02 (schema, store, tests)
+Phase: 2 of 4 (Editor)
+Plan: 3 of 3 in current phase
+Status: Phase 2 complete
+Last activity: 2026-03-01 — Completed Plan 02-03 (optional sections, sidebar, layout)
 
-Progress: [██░░░░░░░░] 20%
+Progress: [█████░░░░░] 50%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
-- Average duration: 4.5 min
-- Total execution time: 0.15 hours
+- Total plans completed: 5
+- Average duration: 5.4 min
+- Total execution time: 0.45 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1-Foundation | 2/2 | 9 min | 4.5 min |
+| 2-Editor | 3/3 | 19 min | 6.3 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (6 min), 01-02 (3 min)
-- Trend: Accelerating
+- Last 5 plans: 01-01 (6 min), 01-02 (3 min), 02-01 (8 min), 02-02 (6 min), 02-03 (5 min)
+- Trend: Stable
 
 *Updated after each plan completion*
 
@@ -63,6 +64,10 @@ Recent decisions affecting current work:
 - Zustand persist: version 1 set, createJSONStorage for SSR safety, useHydration hook required in client components
 - PDF export: @react-pdf/renderer client-side only (dynamic import, ssr: false) — Puppeteer ruled out for serverless
 - Auth: Optional, deferred to v2 — all core features work via localStorage
+- zodResolver removed: Zod v4 input/output type mismatch with react-hook-form Resolver; forms auto-save via watch() so form-level validation unnecessary
+- Languages form: inline Card layout (not expandable) since only 2 fields per entry
+- Mobile nav: fixed-position horizontal scrollable tabs at top; desktop: sticky sidebar
+- Sidebar completion: green checkmark via lucide-react Check icon
 
 ### Pending Todos
 
@@ -76,5 +81,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed all Phase 1 plans (01-01 and 01-02)
+Stopped at: Completed all Phase 2 plans (02-01, 02-02, 02-03)
 Resume file: None
