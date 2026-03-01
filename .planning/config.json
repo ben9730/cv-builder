@@ -10,9 +10,9 @@
   "workflow": {
     "research": true,
     "plan_check": true,
-    "verifier": false,
+    "verifier": true,
     "nyquist_validation": true,
-    "auto_advance": false
+    "auto_advance": true
   },
   "parallelization": true,
   "brave_search": false,

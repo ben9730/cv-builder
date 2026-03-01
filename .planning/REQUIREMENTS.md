@@ -9,8 +9,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Foundation
 
-- [ ] **FOUN-01**: Resume data model supports ordered sections with structured fields (contact, summary, experience, education, skills)
-- [ ] **FOUN-02**: Data model supports optional section types (certifications, projects, languages, volunteer)
+- [x] **FOUN-01**: Resume data model supports ordered sections with structured fields (contact, summary, experience, education, skills)
+- [x] **FOUN-02**: Data model supports optional section types (certifications, projects, languages, volunteer)
 - [ ] **FOUN-03**: Resume data persists in localStorage for anonymous users across page refreshes
 - [ ] **FOUN-04**: Resume data is serializable to JSON for storage and export
 
@@ -98,8 +98,8 @@ Deferred to future release. Tracked but not in current roadmap.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FOUN-01 | Phase 1 | Pending |
-| FOUN-02 | Phase 1 | Pending |
+| FOUN-01 | Phase 1 | Complete |
+| FOUN-02 | Phase 1 | Complete |
 | FOUN-03 | Phase 1 | Pending |
 | FOUN-04 | Phase 1 | Pending |
 | PERS-01 | Phase 1 | Pending |
