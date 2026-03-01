@@ -8,7 +8,7 @@ const primitiveStyles = StyleSheet.create({
     marginTop: 14,
     marginBottom: 8,
     paddingBottom: 4,
-    borderBottomWidth: 1.5,
+    borderBottomWidth: 2,
     borderBottomStyle: 'solid',
     borderBottomColor: '#000000',
   },
@@ -23,7 +23,7 @@ const primitiveStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: 3,
+    marginBottom: 2,
   },
   entryTitleText: {
     flex: 1,
@@ -42,9 +42,9 @@ const primitiveStyles = StyleSheet.create({
     color: '#444444',
   },
   dateText: {
-    fontSize: 10,
+    fontSize: 9.5,
     fontFamily: FONT_FAMILY,
-    color: '#333333',
+    color: '#555555',
     flexShrink: 0,
     textAlign: 'right',
   },
@@ -67,45 +67,48 @@ const primitiveStyles = StyleSheet.create({
     color: '#333333',
     lineHeight: 1.45,
   },
-  // Contact row with icons
-  contactRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'center',
-    marginTop: 6,
-  },
-  contactItemText: {
-    fontSize: 10,
-    fontFamily: FONT_FAMILY,
-    color: '#333333',
-    marginRight: 6,
-  },
-  contactIcon: {
-    fontWeight: 700,
+  // Contact line — clean pipe-separated text (no icons)
+  contactText: {
+    fontSize: 9.5,
     fontFamily: FONT_FAMILY,
     color: '#555555',
-    marginRight: 4,
+    marginTop: 5,
   },
-  contactSeparator: {
-    fontSize: 10,
-    fontFamily: FONT_FAMILY,
-    color: '#999999',
-    marginHorizontal: 8,
+  contactSep: {
+    color: '#AAAAAA',
   },
-  // Pipe-separated contact (for minimal template)
-  contactLinePipe: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    fontSize: 9,
+  // Centered contact (for Minimal template)
+  contactTextCentered: {
+    fontSize: 9.5,
     fontFamily: FONT_FAMILY,
     color: '#555555',
-  },
-  contactPipeSep: {
-    color: '#CCCCCC',
-    marginHorizontal: 6,
+    marginTop: 4,
+    textAlign: 'center',
   },
 })
+
+/**
+ * Build flat list of contact text strings from basics data.
+ */
+function buildContactTexts(basics: ContactInfo): string[] {
+  const items: string[] = []
+  if (basics.email) items.push(basics.email)
+  if (basics.phone) items.push(basics.phone)
+  if (basics.location?.city) {
+    const loc = [basics.location.city, basics.location.region]
+      .filter(Boolean)
+      .join(', ')
+    if (loc) items.push(loc)
+  }
+  if (basics.url) items.push(basics.url)
+  if (basics.profiles && basics.profiles.length > 0) {
+    for (const profile of basics.profiles) {
+      const display = profile.url || profile.username || profile.network
+      if (display) items.push(display)
+    }
+  }
+  return items
+}
 
 /**
  * Section title with colored underline rule (FlowCV style).
@@ -209,68 +212,46 @@ export function BulletList({ items }: { items: string[] }) {
 }
 
 /**
- * Build contact items from basics, including profiles.
- */
-function buildContactItems(basics: ContactInfo): { icon: string; text: string }[] {
-  const items: { icon: string; text: string }[] = []
-  if (basics.email) items.push({ icon: '\u2709', text: basics.email })
-  if (basics.phone) items.push({ icon: '\u260E', text: basics.phone })
-  if (basics.location?.city) {
-    const loc = [basics.location.city, basics.location.region]
-      .filter(Boolean)
-      .join(', ')
-    if (loc) items.push({ icon: '\u25CF', text: loc })
-  }
-  if (basics.url) items.push({ icon: '\u2197', text: basics.url })
-  if (basics.profiles && basics.profiles.length > 0) {
-    for (const profile of basics.profiles) {
-      const display = profile.network || profile.url || profile.username
-      if (display) items.push({ icon: '\u2197', text: display })
-    }
-  }
-  return items
-}
-
-/**
- * Contact line with icons and separators (FlowCV style).
- * Each item: icon + text, separated by vertical bars.
+ * Contact line with clean pipe separators — no icons.
+ * Professional style: "email  |  phone  |  location"
  */
 export function ContactLineModern({ basics }: { basics: ContactInfo }) {
-  const items = buildContactItems(basics)
+  const items = buildContactTexts(basics)
   if (items.length === 0) return null
 
   return (
-    <View style={primitiveStyles.contactRow}>
-      {items.map((item, index) => (
-        <Text key={index} style={primitiveStyles.contactItemText}>
-          {index > 0 ? (
-            <Text style={primitiveStyles.contactSeparator}>  |  </Text>
-          ) : null}
-          <Text style={primitiveStyles.contactIcon}>{item.icon}</Text>
-          <Text> {item.text}</Text>
-        </Text>
-      ))}
-    </View>
+    <Text style={primitiveStyles.contactText}>
+      {items.map((item, i) => {
+        if (i === 0) return <Text key={i}>{item}</Text>
+        return (
+          <Text key={i}>
+            <Text style={primitiveStyles.contactSep}>{'  |  '}</Text>
+            {item}
+          </Text>
+        )
+      })}
+    </Text>
   )
 }
 
 /**
- * Contact line with pipe separators (for minimal/centered templates).
+ * Contact line centered with pipe separators (for Minimal template).
  */
 export function ContactLine({ basics }: { basics: ContactInfo }) {
-  const items = buildContactItems(basics)
+  const items = buildContactTexts(basics)
   if (items.length === 0) return null
 
   return (
-    <View style={primitiveStyles.contactLinePipe}>
-      {items.map((item, index) => (
-        <Text key={index}>
-          {index > 0 && (
-            <Text style={primitiveStyles.contactPipeSep}>|</Text>
-          )}
-          {item.text}
-        </Text>
-      ))}
-    </View>
+    <Text style={primitiveStyles.contactTextCentered}>
+      {items.map((item, i) => {
+        if (i === 0) return <Text key={i}>{item}</Text>
+        return (
+          <Text key={i}>
+            <Text style={primitiveStyles.contactSep}>{'  |  '}</Text>
+            {item}
+          </Text>
+        )
+      })}
+    </Text>
   )
 }

@@ -33,23 +33,15 @@ const styles = StyleSheet.create({
     color: '#BEE3F8',
     marginBottom: 8,
   },
-  // Header contact
-  headerContactRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'center',
-  },
+  // Header contact — single line with pipes
   headerContactText: {
     fontSize: 9,
     fontFamily: FONT_FAMILY,
     color: '#E2E8F0',
-    marginRight: 4,
+    marginTop: 6,
   },
   headerContactSep: {
-    fontSize: 9,
-    fontFamily: FONT_FAMILY,
     color: '#63B3ED',
-    marginHorizontal: 6,
   },
   // Two-column body
   body: {
@@ -186,16 +178,16 @@ export function ModernTemplate({ resume }: { resume: ResumeData }) {
           {basics.name ? <Text style={styles.name}>{basics.name}</Text> : null}
           {basics.label ? <Text style={styles.label}>{basics.label}</Text> : null}
           {contactParts.length > 0 ? (
-            <View style={styles.headerContactRow}>
+            <Text style={styles.headerContactText}>
               {contactParts.map((part, i) => (
-                <Text key={i} style={styles.headerContactText}>
+                <Text key={i}>
                   {i > 0 ? (
-                    <Text style={styles.headerContactSep}>  |  </Text>
+                    <Text style={styles.headerContactSep}>{'  |  '}</Text>
                   ) : null}
                   {part}
                 </Text>
               ))}
-            </View>
+            </Text>
           ) : null}
         </View>
 
