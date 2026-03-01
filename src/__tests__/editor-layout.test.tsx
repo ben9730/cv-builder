@@ -8,6 +8,37 @@ vi.mock('@/hooks/use-hydration', () => ({
   useHydration: () => true,
 }))
 
+// Mock @react-pdf/renderer to avoid SSR issues in tests
+vi.mock('@react-pdf/renderer', () => ({
+  Document: ({ children }: { children: React.ReactNode }) => <div data-testid="document">{children}</div>,
+  Page: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  View: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  Text: ({ children }: { children: React.ReactNode }) => <span>{children}</span>,
+  StyleSheet: {
+    create: <T extends Record<string, object>>(styles: T) => styles,
+  },
+  Font: { register: vi.fn() },
+  PDFViewer: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="pdf-viewer">{children}</div>
+  ),
+}))
+
+// Mock next/dynamic to render the component directly (no SSR gating in test)
+vi.mock('next/dynamic', () => ({
+  default: (loader: () => Promise<{ default: React.ComponentType }>) => {
+    // Eagerly resolve the dynamic import for testing
+    let Component: React.ComponentType | null = null
+    const promise = loader()
+    promise.then((mod) => {
+      Component = mod.default
+    })
+    return function DynamicComponent(props: Record<string, unknown>) {
+      if (Component) return <Component {...props} />
+      return <div data-testid="preview-loading">Loading preview...</div>
+    }
+  },
+}))
+
 describe('EditorLayout', () => {
   beforeEach(() => {
     cleanup()
@@ -18,6 +49,7 @@ describe('EditorLayout', () => {
         education: [],
         skills: [],
       },
+      selectedTemplate: 'classic',
     })
   })
 
@@ -76,5 +108,22 @@ describe('EditorLayout', () => {
     const educationButtons = screen.getAllByText('Education')
     await user.click(educationButtons[0])
     expect(screen.getByRole('button', { name: /add education/i })).toBeInTheDocument()
+  })
+
+  it('renders template switcher with all three templates', () => {
+    render(<EditorLayout />)
+    expect(screen.getByText('Classic')).toBeInTheDocument()
+    expect(screen.getByText('Modern')).toBeInTheDocument()
+    expect(screen.getByText('Minimal')).toBeInTheDocument()
+  })
+
+  it('renders page indicator', () => {
+    render(<EditorLayout />)
+    expect(screen.getByText(/page 1 of 1/i)).toBeInTheDocument()
+  })
+
+  it('has a mobile preview toggle button', () => {
+    render(<EditorLayout />)
+    expect(screen.getByLabelText(/switch to preview mode/i)).toBeInTheDocument()
   })
 })

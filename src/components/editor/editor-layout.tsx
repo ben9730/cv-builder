@@ -1,12 +1,30 @@
 'use client'
 
+import { useState } from 'react'
+import dynamic from 'next/dynamic'
 import { useResumeStore } from '@/lib/store/resume-store'
 import { useHydration } from '@/hooks/use-hydration'
 import { useSectionNav, SECTION_LABELS, type SectionId } from '@/hooks/use-section-nav'
 import { Sidebar } from '@/components/editor/sidebar'
 import { SectionForm } from '@/components/editor/section-form'
+import { TemplateSwitcher } from '@/components/preview/template-switcher'
+import { PageIndicator } from '@/components/preview/page-indicator'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { Eye, PenLine } from 'lucide-react'
+
+// Dynamic import for PreviewPanel — @react-pdf/renderer cannot run in SSR
+const PreviewPanel = dynamic(
+  () => import('@/components/preview/preview-panel'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-full w-full flex items-center justify-center bg-muted/30 p-4">
+        <div className="w-full h-full rounded-lg bg-muted animate-pulse" />
+      </div>
+    ),
+  }
+)
 
 export function EditorLayout() {
   const hydrated = useHydration()
@@ -19,6 +37,9 @@ export function EditorLayout() {
     availableOptionalSections,
     enableOptionalSection,
   } = useSectionNav()
+
+  // Mobile: toggle between edit and preview modes
+  const [mobileView, setMobileView] = useState<'edit' | 'preview'>('edit')
 
   const handleAddOptionalSection = (section: string) => {
     enableSection(section as 'certificates' | 'projects' | 'languages' | 'volunteer')
@@ -56,29 +77,72 @@ export function EditorLayout() {
         </div>
       </aside>
 
-      {/* Mobile tabs */}
+      {/* Mobile tabs + view toggle */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-10 bg-background border-b">
-        <div className="overflow-x-auto flex gap-1 p-2">
-          {visibleSections.map((section) => (
-            <Button
-              key={section}
-              variant={activeSection === section ? 'default' : 'ghost'}
-              size="sm"
-              className="shrink-0"
-              onClick={() => setActiveSection(section)}
-            >
-              {SECTION_LABELS[section]}
-            </Button>
-          ))}
+        <div className="flex items-center justify-between px-2 pt-2">
+          <div className="overflow-x-auto flex gap-1 flex-1">
+            {visibleSections.map((section) => (
+              <Button
+                key={section}
+                variant={activeSection === section && mobileView === 'edit' ? 'default' : 'ghost'}
+                size="sm"
+                className="shrink-0"
+                onClick={() => {
+                  setActiveSection(section)
+                  setMobileView('edit')
+                }}
+              >
+                {SECTION_LABELS[section]}
+              </Button>
+            ))}
+          </div>
+          <Button
+            variant={mobileView === 'preview' ? 'default' : 'outline'}
+            size="sm"
+            className="shrink-0 ml-2"
+            onClick={() => setMobileView(mobileView === 'preview' ? 'edit' : 'preview')}
+            aria-label={mobileView === 'preview' ? 'Switch to edit mode' : 'Switch to preview mode'}
+          >
+            {mobileView === 'preview' ? (
+              <><PenLine className="size-4 mr-1" /> Edit</>
+            ) : (
+              <><Eye className="size-4 mr-1" /> Preview</>
+            )}
+          </Button>
         </div>
       </div>
 
-      {/* Content area */}
-      <main className="flex-1 pt-14 md:pt-0">
-        <div className="max-w-2xl mx-auto p-6">
-          <SectionForm activeSection={activeSection} />
-        </div>
-      </main>
+      {/* Content area: editor + preview */}
+      <div className="flex flex-1 min-w-0">
+        {/* Editor forms — hidden on mobile when in preview mode */}
+        <main
+          className={cn(
+            'flex-1 min-w-0 pt-14 md:pt-0',
+            mobileView === 'preview' && 'hidden md:block'
+          )}
+        >
+          <div className="max-w-2xl mx-auto p-6">
+            <SectionForm activeSection={activeSection} />
+          </div>
+        </main>
+
+        {/* Preview panel — always visible on lg+, toggle on mobile */}
+        <aside
+          className={cn(
+            'border-l shrink-0 flex flex-col',
+            // Desktop: show on lg screens
+            'hidden lg:flex lg:w-[420px]',
+            // Mobile: show when preview mode is active (full-width)
+            mobileView === 'preview' && 'flex w-full lg:w-[420px] pt-14 lg:pt-0'
+          )}
+        >
+          <TemplateSwitcher />
+          <div className="flex-1 min-h-0">
+            <PreviewPanel />
+          </div>
+          <PageIndicator />
+        </aside>
+      </div>
     </div>
   )
 }
