@@ -13,6 +13,7 @@ import {
   VolunteerEntrySchema,
 } from '@/lib/schema/resume-schema'
 import type { ResumeData, WorkEntry, EducationEntry, SkillEntry } from '@/types/resume'
+import type { TemplateId } from '@/components/templates/template-registry'
 
 type OptionalSection = 'certificates' | 'projects' | 'languages' | 'volunteer'
 
@@ -25,7 +26,9 @@ const SECTION_SCHEMAS = {
 
 interface ResumeStore {
   resume: ResumeData
+  selectedTemplate: TemplateId
   setResume: (data: ResumeData) => void
+  setSelectedTemplate: (id: TemplateId) => void
   updateBasics: (basics: Partial<ResumeData['basics']>) => void
   reset: () => void
   // Work experience
@@ -54,7 +57,9 @@ export const useResumeStore = create<ResumeStore>()(
   persist(
     (set) => ({
       resume: DEFAULT_RESUME,
+      selectedTemplate: 'classic' as TemplateId,
       setResume: (data) => set({ resume: data }),
+      setSelectedTemplate: (id) => set({ selectedTemplate: id }),
       updateBasics: (basics) =>
         set((state) => ({
           resume: {

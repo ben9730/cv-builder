@@ -24,3 +24,4 @@ export type LanguageEntry = z.infer<typeof LanguageEntrySchema>
 export type VolunteerEntry = z.infer<typeof VolunteerEntrySchema>
 export type Profile = z.infer<typeof ProfileSchema>
 export type Location = z.infer<typeof LocationSchema>
+export type { TemplateId } from '@/components/templates/template-registry'
