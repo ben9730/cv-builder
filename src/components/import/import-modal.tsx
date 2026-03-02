@@ -13,6 +13,7 @@ import { exportJson } from '@/components/export/json-export'
 import { ResumeDataSchema } from '@/lib/schema/resume-schema'
 import { parseText, cleanLines } from '@/lib/import/text-parser'
 import { mapSections, extractContact } from '@/lib/import/section-mapper'
+import { extractPdfTextClient, ScannedPdfError } from '@/lib/import/pdf-client'
 import type { MappedSection } from '@/lib/import/pdf-types'
 import type { ResumeData } from '@/types/resume'
 import { cn } from '@/lib/utils'
@@ -71,7 +72,7 @@ export function ImportModal({ open, onOpenChange }: ImportModalProps) {
     setStatusText('')
   }, [])
 
-  /** Handle PDF upload via API. */
+  /** Handle PDF: extract text client-side using pdfjs-dist. */
   const handlePdf = useCallback(
     async (file: File) => {
       setState('uploading')
@@ -79,32 +80,17 @@ export function ImportModal({ open, onOpenChange }: ImportModalProps) {
       setErrorMsg('')
 
       try {
-        const formData = new FormData()
-        formData.append('file', file)
-
-        const response = await fetch('/api/parse', {
-          method: 'POST',
-          body: formData,
-        })
-
-        const data = await response.json()
-
-        if (!response.ok) {
-          if (data.scanned) {
-            setErrorMsg(data.error)
-            setState('idle')
-            setTab('paste')
-            return
-          }
-          setErrorMsg(data.error || 'Failed to parse PDF')
+        const { text } = await extractPdfTextClient(file)
+        setState('parsing')
+        processSections(text)
+      } catch (error) {
+        if (error instanceof ScannedPdfError) {
+          setErrorMsg(error.message)
           setState('idle')
+          setTab('paste')
           return
         }
-
-        setState('parsing')
-        processSections(data.text)
-      } catch {
-        setErrorMsg('Failed to upload file. Please try again.')
+        setErrorMsg(error instanceof Error ? error.message : 'Failed to parse PDF')
         setState('idle')
       }
     },
