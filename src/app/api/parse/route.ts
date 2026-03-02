@@ -28,6 +28,12 @@ export function isScannedPdf(text: string): boolean {
 
 /** Extract text from a PDF buffer using pdfjs-dist, preserving line breaks. */
 export async function extractPdfText(buffer: Uint8Array): Promise<{ text: string; pages: number }> {
+  // In Node.js (Vercel serverless), pdfjs uses a "fake worker" and attempts
+  // `await import("./pdf.worker.mjs")` with a relative path that fails in
+  // serverless environments. Importing the worker file first sets
+  // `globalThis.pdfjsWorker`, which pdfjs detects and uses directly,
+  // bypassing the broken relative dynamic import entirely.
+  await import('pdfjs-dist/legacy/build/pdf.worker.mjs')
   const pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs')
   const doc = await pdfjsLib.getDocument({ data: buffer }).promise
 

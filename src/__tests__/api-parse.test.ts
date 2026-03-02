@@ -7,6 +7,9 @@ vi.mock('pdfjs-dist/legacy/build/pdf.mjs', () => ({
   getDocument: mockGetDocument,
 }))
 
+// Mock the worker side-effect import (no exports needed)
+vi.mock('pdfjs-dist/legacy/build/pdf.worker.mjs', () => ({}))
+
 import {
   isValidPdf,
   isScannedPdf,
