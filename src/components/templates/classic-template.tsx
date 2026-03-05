@@ -23,13 +23,13 @@ const styles = StyleSheet.create({
     fontWeight: 700,
     fontFamily: FONT_FAMILY,
     color: '#000000',
-    marginBottom: 2,
+    marginBottom: 4,
   },
   label: {
     fontSize: 12,
     fontFamily: FONT_FAMILY,
     color: '#444444',
-    marginBottom: 2,
+    marginBottom: 4,
   },
   // Body text
   summary: {

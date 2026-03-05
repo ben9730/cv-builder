@@ -13,7 +13,7 @@ import {
 const primitiveStyles = StyleSheet.create({
   // Section title with colored underline (FlowCV style)
   sectionTitleContainer: {
-    marginTop: 14,
+    marginTop: 16,
     marginBottom: 8,
     paddingBottom: 4,
     borderBottomWidth: 2,
