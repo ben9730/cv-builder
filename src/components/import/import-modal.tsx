@@ -12,7 +12,16 @@ import { useResumeStore } from '@/lib/store/resume-store'
 import { exportJson } from '@/components/export/json-export'
 import { ResumeDataSchema } from '@/lib/schema/resume-schema'
 import { parseText, cleanLines } from '@/lib/import/text-parser'
-import { mapSections, extractContact } from '@/lib/import/section-mapper'
+import {
+  mapSections,
+  extractContact,
+  parseExperienceLines,
+  parseEducationLines,
+  parseSkillLines,
+  parseProjectLines,
+  parseLanguageLines,
+  parseCertificateLines,
+} from '@/lib/import/section-mapper'
 import { extractPdfTextClient, ScannedPdfError } from '@/lib/import/pdf-client'
 import type { MappedSection } from '@/lib/import/pdf-types'
 import type { ResumeData } from '@/types/resume'
@@ -208,15 +217,20 @@ export function ImportModal({ open, onOpenChange }: ImportModalProps) {
       }
 
       // Build from mapped sections
-      const contactSection = selectedSections.find((s) => s.type === 'contact')
-      const summarySection = selectedSections.find((s) => s.type === 'summary')
-      const experienceSection = selectedSections.find((s) => s.type === 'experience')
-      const educationSection = selectedSections.find((s) => s.type === 'education')
-      const skillsSection = selectedSections.find((s) => s.type === 'skills')
+      const find = (t: string) => selectedSections.find((s) => s.type === t)
+      const contactSection = find('contact')
+      const summarySection = find('summary')
+      const experienceSection = find('experience')
+      const educationSection = find('education')
+      const skillsSection = find('skills')
+      const projectsSection = find('projects')
+      const languagesSection = find('languages')
+      const volunteerSection = find('volunteer')
+      const certificatesSection = find('certificates')
 
       const contact = contactSection
         ? extractContact(contactSection.rawLines)
-        : { name: '', email: '', phone: '', url: '', location: '' }
+        : { name: '', email: '', phone: '', url: '', location: '', profiles: [] }
 
       const newResume: ResumeData = {
         basics: {
@@ -225,38 +239,61 @@ export function ImportModal({ open, onOpenChange }: ImportModalProps) {
           phone: contact.phone || undefined,
           url: contact.url || undefined,
           summary: summarySection?.content || undefined,
-          profiles: [],
+          profiles: contact.profiles.map((p) => ({
+            network: p.network,
+            username: p.username,
+            url: p.username.startsWith('http') ? p.username : undefined,
+          })),
           location: contact.location
             ? { city: contact.location.split(',')[0]?.trim(), region: contact.location.split(',')[1]?.trim() }
             : undefined,
         },
         work: experienceSection
-          ? experienceSection.rawLines
-              .filter((l) => l.trim())
-              .map((line) => ({
-                name: '',
-                position: line,
-                highlights: [],
-              }))
+          ? parseExperienceLines(experienceSection.rawLines).map((e) => ({
+              name: e.name,
+              position: e.position,
+              startDate: e.startDate,
+              endDate: e.endDate,
+              highlights: e.highlights,
+            }))
           : [],
         education: educationSection
-          ? educationSection.rawLines
-              .filter((l) => l.trim())
-              .map((line) => ({
-                institution: line,
-                courses: [],
-              }))
+          ? parseEducationLines(educationSection.rawLines).map((e) => ({
+              institution: e.institution,
+              area: e.area,
+              studyType: e.studyType,
+              startDate: e.startDate,
+              endDate: e.endDate,
+              courses: [],
+            }))
           : [],
         skills: skillsSection
-          ? skillsSection.content
-              .split(/[,|]/)
-              .map((s) => s.trim())
-              .filter(Boolean)
-              .map((name) => ({
-                name,
-                keywords: [],
-              }))
+          ? parseSkillLines(skillsSection.rawLines)
           : [],
+        projects: projectsSection
+          ? parseProjectLines(projectsSection.rawLines).map((p) => ({
+              name: p.name,
+              description: p.description,
+              highlights: p.highlights,
+              keywords: [],
+              roles: [],
+            }))
+          : undefined,
+        languages: languagesSection
+          ? parseLanguageLines(languagesSection.rawLines)
+          : undefined,
+        volunteer: volunteerSection
+          ? parseExperienceLines(volunteerSection.rawLines).map((e) => ({
+              organization: e.name,
+              position: e.position,
+              startDate: e.startDate,
+              endDate: e.endDate,
+              highlights: e.highlights,
+            }))
+          : undefined,
+        certificates: certificatesSection
+          ? parseCertificateLines(certificatesSection.rawLines)
+          : undefined,
       }
 
       setResume(newResume)

@@ -78,9 +78,17 @@ function looksLikeNewEntry(line: string): boolean {
 
 /** Check if a line is likely a continuation of the previous line. */
 function looksLikeContinuation(current: string, previous: string): boolean {
+  // Don't merge lines containing email or phone numbers
+  if (/[\w.+-]+@[\w-]+\.[\w.]+/.test(current)) return false
+  if (/(?:\+?\d[\d\s\-().]{6,}\d)/.test(current)) return false
+
   // Short fragments that start with lowercase are often continuations
   if (/^[a-z]/.test(current) && current.length < 80) return true
   // Previous line ends with a conjunction or preposition
   if (/\b(and|or|with|for|to|in|of|the|a)\s*$/i.test(previous)) return true
+  // Previous line is a bullet that doesn't end with sentence punctuation (wrapped bullet text)
+  if (/^-\s/.test(previous) && !/[.!?;:]\s*$/.test(previous)) return true
+  // Previous line ends with comma (mid-sentence wrap)
+  if (/,\s*$/.test(previous)) return true
   return false
 }

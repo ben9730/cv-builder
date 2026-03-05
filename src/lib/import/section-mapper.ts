@@ -159,40 +159,47 @@ function buildSection(
 /**
  * Extract structured contact information from contact section lines.
  */
+const KNOWN_NETWORKS = ['linkedin', 'github', 'twitter', 'gitlab', 'stackoverflow', 'dribbble', 'behance', 'medium']
+
 export function extractContact(lines: string[]): {
   name: string
   email: string
   phone: string
   url: string
   location: string
+  profiles: Array<{ network: string; username: string }>
 } {
   let name = ''
   let email = ''
   let phone = ''
   let url = ''
   let location = ''
+  const profiles: Array<{ network: string; username: string }> = []
 
   for (const line of lines) {
-    // Extract email
     const emailMatch = line.match(EMAIL_PATTERN)
-    if (emailMatch && !email) {
-      email = emailMatch[0]
-    }
+    if (emailMatch && !email) email = emailMatch[0]
 
-    // Extract phone
     const phoneMatch = line.match(/(?:\+?\d[\d\s\-().]{6,}\d)/)
-    if (phoneMatch && !phone) {
-      phone = phoneMatch[0].trim()
-    }
+    if (phoneMatch && !phone) phone = phoneMatch[0].trim()
 
-    // Extract URL
     const urlMatch = line.match(URL_PATTERN)
-    if (urlMatch && !url) {
-      url = urlMatch[0]
+    if (urlMatch && !url) url = urlMatch[0]
+
+    // Detect social network keywords (LinkedIn, GitHub, etc.)
+    for (const net of KNOWN_NETWORKS) {
+      if (new RegExp(`\\b${net}\\b`, 'i').test(line) && !profiles.some(p => p.network.toLowerCase() === net)) {
+        const netUrlRe = new RegExp(`(https?://)?(?:www\\.)?${net}\\.com/[\\w\\-./]+`, 'i')
+        const netUrlMatch = line.match(netUrlRe)
+        profiles.push({
+          network: net.charAt(0).toUpperCase() + net.slice(1),
+          username: netUrlMatch ? netUrlMatch[0] : '',
+        })
+      }
     }
   }
 
-  // Name is typically the first prominent line (not email, phone, URL, or location)
+  // Name: first line not dominated by contact info
   for (const line of lines) {
     if (
       !EMAIL_PATTERN.test(line) &&
@@ -206,8 +213,7 @@ export function extractContact(lines: string[]): {
     }
   }
 
-  // Fallback: if no clean name line found, try to extract name from mixed lines
-  // by stripping email, phone, and URL patterns from lines
+  // Fallback: extract name from mixed lines by stripping known patterns
   if (!name) {
     for (const line of lines) {
       const cleaned = line
@@ -223,7 +229,7 @@ export function extractContact(lines: string[]): {
     }
   }
 
-  // Location: look for city/state patterns
+  // Location: US format (City, ST or zip code)
   for (const line of lines) {
     if (/\b[A-Z][a-z]+,\s*[A-Z]{2}\b/.test(line) || /\b\d{5}\b/.test(line)) {
       if (line !== name) {
@@ -233,5 +239,197 @@ export function extractContact(lines: string[]): {
     }
   }
 
-  return { name, email, phone, url, location }
+  // Fallback location: strip known fields from contact lines, remainder is location
+  if (!location) {
+    for (const line of lines) {
+      if (line === name) continue
+      let remaining = line
+      remaining = remaining.replace(EMAIL_PATTERN, '')
+      remaining = remaining.replace(/(?:\+?\d[\d\s\-().]{6,}\d)/, '')
+      remaining = remaining.replace(URL_PATTERN, '')
+      for (const p of profiles) {
+        remaining = remaining.replace(new RegExp(`\\b${p.network}\\b`, 'gi'), '')
+      }
+      remaining = remaining.replace(/\s{2,}/g, ' ').trim()
+      if (remaining.length > 2 && remaining.length < 50 && /[a-zA-Z]/.test(remaining)) {
+        location = remaining
+        break
+      }
+    }
+  }
+
+  return { name, email, phone, url, location, profiles }
+}
+
+// --- Section content parsers ---
+
+/** Bullet prefix (after cleanLines normalization) */
+const BULLET_RE = /^-\s+/
+
+/** Check if a line is primarily a standalone date range */
+function isDateOnlyLine(line: string): boolean {
+  return /^(?:(?:\d{1,2}\/)?(?:\d{4}))\s*[-–—]\s*(?:Present|Current|(?:\d{1,2}\/)?\d{4})$/i.test(line.trim())
+}
+
+/** Extract start/end from a date range string */
+function parseDateStr(text: string): { start: string; end: string } | null {
+  const m = text.match(/((?:\d{1,2}\/)?(\d{4}))\s*[-–—]\s*(Present|Current|(?:\d{1,2}\/)?\d{4})/i)
+  if (!m) return null
+  return { start: m[1], end: m[3] }
+}
+
+/** Parse "Title, Subtitle DateRange" header line */
+function parseEntryHeader(line: string): {
+  title: string; subtitle: string; startDate?: string; endDate?: string
+} {
+  let rest = line
+  let startDate: string | undefined
+  let endDate: string | undefined
+
+  // Extract trailing date range
+  const dateMatch = rest.match(/\s+((?:\d{1,2}\/)?(?:\d{4})\s*[-–—]\s*(?:Present|Current|(?:\d{1,2}\/)?(?:\d{4})))\s*$/i)
+  if (dateMatch) {
+    const dates = parseDateStr(dateMatch[1])
+    if (dates) { startDate = dates.start; endDate = dates.end }
+    rest = rest.substring(0, dateMatch.index!).trim()
+  }
+
+  const idx = rest.indexOf(',')
+  if (idx > 0) {
+    return { title: rest.substring(0, idx).trim(), subtitle: rest.substring(idx + 1).trim(), startDate, endDate }
+  }
+  return { title: rest.trim(), subtitle: '', startDate, endDate }
+}
+
+/** Parse experience section lines into structured work entries. */
+export function parseExperienceLines(lines: string[]) {
+  const entries: Array<{
+    position: string; name: string; startDate?: string; endDate?: string; highlights: string[]
+  }> = []
+  let current: (typeof entries)[0] | null = null
+
+  for (const line of lines) {
+    if (!line.trim()) continue
+
+    if (BULLET_RE.test(line)) {
+      if (current) current.highlights.push(line.replace(BULLET_RE, ''))
+    } else if (isDateOnlyLine(line)) {
+      if (current && !current.startDate) {
+        const dates = parseDateStr(line)
+        if (dates) { current.startDate = dates.start; current.endDate = dates.end }
+      }
+    } else {
+      if (current) entries.push(current)
+      const h = parseEntryHeader(line)
+      current = { position: h.title, name: h.subtitle, startDate: h.startDate, endDate: h.endDate, highlights: [] }
+    }
+  }
+
+  if (current) entries.push(current)
+  return entries
+}
+
+/** Parse education section lines into structured entries. */
+export function parseEducationLines(lines: string[]) {
+  const entries: Array<{
+    institution: string; area?: string; studyType?: string; startDate?: string; endDate?: string
+  }> = []
+
+  for (const line of lines) {
+    if (!line.trim() || BULLET_RE.test(line)) continue
+
+    // Skip standalone date lines
+    if (isDateOnlyLine(line)) continue
+
+    const h = parseEntryHeader(line)
+    const degreeRe = /^(B\.?S\.?c?\.?|M\.?S\.?c?\.?|Bachelor'?s?|Master'?s?|Ph\.?D\.?|MBA|Associate'?s?|Diploma)(?:\s+(?:in|of)\s+(.+))?$/i
+    const dm = h.title.match(degreeRe)
+
+    if (dm) {
+      entries.push({ studyType: dm[1], area: dm[2], institution: h.subtitle, startDate: h.startDate, endDate: h.endDate })
+    } else {
+      entries.push({
+        institution: h.subtitle || h.title,
+        area: h.subtitle ? h.title : undefined,
+        startDate: h.startDate,
+        endDate: h.endDate,
+      })
+    }
+  }
+
+  return entries
+}
+
+/** Parse skills section lines into category + keywords entries. */
+export function parseSkillLines(lines: string[]) {
+  const entries: Array<{ name: string; keywords: string[] }> = []
+  let category = ''
+
+  for (const line of lines) {
+    if (!line.trim()) continue
+
+    const hasKeywords = line.includes('|') || line.split(',').length > 3
+
+    if (hasKeywords) {
+      const kw = line.includes('|')
+        ? line.split('|').map(k => k.trim()).filter(Boolean)
+        : line.split(',').map(k => k.trim()).filter(Boolean)
+
+      if (category) {
+        entries.push({ name: category, keywords: kw })
+        category = ''
+      } else if (entries.length > 0) {
+        // No category — continuation of previous entry's keywords
+        entries[entries.length - 1].keywords.push(...kw)
+      } else {
+        entries.push({ name: '', keywords: kw })
+      }
+    } else {
+      category = line.trim()
+    }
+  }
+
+  if (category) entries.push({ name: category, keywords: [] })
+  return entries
+}
+
+/** Parse project section lines into structured entries. */
+export function parseProjectLines(lines: string[]) {
+  const entries: Array<{ name: string; description?: string; highlights: string[] }> = []
+  let current: (typeof entries)[0] | null = null
+
+  for (const line of lines) {
+    if (!line.trim()) continue
+
+    if (BULLET_RE.test(line)) {
+      if (current) current.highlights.push(line.replace(BULLET_RE, ''))
+    } else {
+      if (current) entries.push(current)
+      const h = parseEntryHeader(line)
+      current = { name: h.title, description: h.subtitle || undefined, highlights: [] }
+    }
+  }
+
+  if (current) entries.push(current)
+  return entries
+}
+
+/** Parse language section lines. */
+export function parseLanguageLines(lines: string[]) {
+  return lines
+    .filter(l => l.trim() && !BULLET_RE.test(l))
+    .map(line => {
+      const parts = line.split(/\s*[-–—:]\s*/)
+      return { language: parts[0]?.trim() || line, fluency: parts[1]?.trim() }
+    })
+}
+
+/** Parse certificate section lines. */
+export function parseCertificateLines(lines: string[]) {
+  return lines
+    .filter(l => l.trim() && !BULLET_RE.test(l))
+    .map(line => {
+      const h = parseEntryHeader(line)
+      return { name: h.title, issuer: h.subtitle || undefined, date: h.startDate }
+    })
 }
